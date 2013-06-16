@@ -1,0 +1,251 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>EventAI Creator</name>
+    </assembly>
+    <members>
+        <member name="F:EventAI_Creator.GUI.General.localestext.TEXTEditor.components">
+            <summary>
+            Erforderliche Designervariable.
+            </summary>
+        </member>
+        <member name="M:EventAI_Creator.GUI.General.localestext.TEXTEditor.Dispose(System.Boolean)">
+            <summary>
+            Verwendete Ressourcen bereinigen.
+            </summary>
+            <param name="disposing">True, wenn verwaltete Ressourcen gelöscht werden sollen; andernfalls False.</param>
+        </member>
+        <member name="M:EventAI_Creator.GUI.General.localestext.TEXTEditor.InitializeComponent">
+            <summary>
+            Erforderliche Methode für die Designerunterstützung.
+            Der Inhalt der Methode darf nicht mit dem Code-Editor geändert werden.
+            </summary>
+        </member>
+        <member name="F:EventAI_Creator.ScriptDisplay.components">
+            <summary>
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:EventAI_Creator.ScriptDisplay.Dispose(System.Boolean)">
+            <summary>
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:EventAI_Creator.ScriptDisplay.InitializeComponent">
+            <summary>
+            Required method for Designer support - do not modify
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="F:EventAI_Creator.SummonsEditor.components">
+            <summary>
+            Erforderliche Designervariable.
+            </summary>
+        </member>
+        <member name="M:EventAI_Creator.SummonsEditor.Dispose(System.Boolean)">
+            <summary>
+            Verwendete Ressourcen bereinigen.
+            </summary>
+            <param name="disposing">True, wenn verwaltete Ressourcen gelöscht werden sollen; andernfalls False.</param>
+        </member>
+        <member name="M:EventAI_Creator.SummonsEditor.InitializeComponent">
+            <summary>
+            Erforderliche Methode für die Designerunterstützung.
+            Der Inhalt der Methode darf nicht mit dem Code-Editor geändert werden.
+            </summary>
+        </member>
+        <member name="F:EventAI_Creator.NewCreatureDialog.components">
+            <summary>
+            Erforderliche Designervariable.
+            </summary>
+        </member>
+        <member name="M:EventAI_Creator.NewCreatureDialog.Dispose(System.Boolean)">
+            <summary>
+            Verwendete Ressourcen bereinigen.
+            </summary>
+            <param name="disposing">True, wenn verwaltete Ressourcen gelöscht werden sollen; andernfalls False.</param>
+        </member>
+        <member name="M:EventAI_Creator.NewCreatureDialog.InitializeComponent">
+            <summary>
+            Erforderliche Methode für die Designerunterstützung.
+            Der Inhalt der Methode darf nicht mit dem Code-Editor geändert werden.
+            </summary>
+        </member>
+        <member name="F:EventAI_Creator.NPCEditor.components">
+            <summary>
+            Erforderliche Designervariable.
+            </summary>
+        </member>
+        <member name="M:EventAI_Creator.NPCEditor.Dispose(System.Boolean)">
+            <summary>
+            Verwendete Ressourcen bereinigen.
+            </summary>
+            <param name="disposing">True, wenn verwaltete Ressourcen gelöscht werden sollen; andernfalls False.</param>
+        </member>
+        <member name="M:EventAI_Creator.NPCEditor.InitializeComponent">
+            <summary>
+            Erforderliche Methode für die Designerunterstützung.
+            Der Inhalt der Methode darf nicht mit dem Code-Editor geändert werden.
+            </summary>
+        </member>
+        <member name="F:EventAI_Creator.DbScriptControl.components">
+            <summary> 
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:EventAI_Creator.DbScriptControl.Dispose(System.Boolean)">
+            <summary> 
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:EventAI_Creator.DbScriptControl.InitializeComponent">
+            <summary> 
+            Required method for Designer support - do not modify 
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="F:EventAI_Creator.Hauptfenster.components">
+            <summary>
+            Erforderliche Designervariable.
+            </summary>
+        </member>
+        <member name="M:EventAI_Creator.Hauptfenster.Dispose(System.Boolean)">
+            <summary>
+            Verwendete Ressourcen bereinigen.
+            </summary>
+            <param name="disposing">True, wenn verwaltete Ressourcen gelöscht werden sollen; andernfalls False.</param>
+        </member>
+        <member name="M:EventAI_Creator.Hauptfenster.InitializeComponent">
+            <summary>
+            Erforderliche Methode für die Designerunterstützung.
+            Der Inhalt der Methode darf nicht mit dem Code-Editor geändert werden.
+            </summary>
+        </member>
+        <member name="F:EventAI_Creator.GUI.General.eAICreator.components">
+            <summary>
+            Erforderliche Designervariable.
+            </summary>
+        </member>
+        <member name="M:EventAI_Creator.GUI.General.eAICreator.Dispose(System.Boolean)">
+            <summary>
+            Verwendete Ressourcen bereinigen.
+            </summary>
+            <param name="disposing">True, wenn verwaltete Ressourcen gelöscht werden sollen; andernfalls False.</param>
+        </member>
+        <member name="M:EventAI_Creator.GUI.General.eAICreator.InitializeComponent">
+            <summary>
+            Erforderliche Methode für die Designerunterstützung.
+            Der Inhalt der Methode darf nicht mit dem Code-Editor geändert werden.
+            </summary>
+        </member>
+        <member name="F:EventAI_Creator.GUI.General.ControlPanel.components">
+            <summary>
+            Erforderliche Designervariable.
+            </summary>
+        </member>
+        <member name="M:EventAI_Creator.GUI.General.ControlPanel.Dispose(System.Boolean)">
+            <summary>
+            Verwendete Ressourcen bereinigen.
+            </summary>
+            <param name="disposing">True, wenn verwaltete Ressourcen gelöscht werden sollen; andernfalls False.</param>
+        </member>
+        <member name="M:EventAI_Creator.GUI.General.ControlPanel.InitializeComponent">
+            <summary>
+            Erforderliche Methode für die Designerunterstützung.
+            Der Inhalt der Methode darf nicht mit dem Code-Editor geändert werden.
+            </summary>
+        </member>
+        <member name="M:EventAI_Creator.Program.Main">
+            <summary>
+            Der Haupteinstiegspunkt für die Anwendung.
+            </summary>
+        </member>
+        <member name="F:EventAI_Creator.EventFlag.components">
+            <summary>
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:EventAI_Creator.EventFlag.Dispose(System.Boolean)">
+            <summary>
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:EventAI_Creator.EventFlag.InitializeComponent">
+            <summary>
+            Required method for Designer support - do not modify
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="F:EventAI_Creator.EventControl.components">
+            <summary> 
+            Erforderliche Designervariable.
+            </summary>
+        </member>
+        <member name="M:EventAI_Creator.EventControl.Dispose(System.Boolean)">
+            <summary> 
+            Verwendete Ressourcen bereinigen.
+            </summary>
+            <param name="disposing">True, wenn verwaltete Ressourcen gelöscht werden sollen; andernfalls False.</param>
+        </member>
+        <member name="M:EventAI_Creator.EventControl.InitializeComponent">
+            <summary> 
+            Erforderliche Methode für die Designerunterstützung. 
+            Der Inhalt der Methode darf nicht mit dem Code-Editor geändert werden.
+            </summary>
+        </member>
+        <member name="T:EventAI_Creator.Properties.Resources">
+            <summary>
+              A strongly-typed resource class, for looking up localized strings, etc.
+            </summary>
+        </member>
+        <member name="P:EventAI_Creator.Properties.Resources.ResourceManager">
+            <summary>
+              Returns the cached ResourceManager instance used by this class.
+            </summary>
+        </member>
+        <member name="P:EventAI_Creator.Properties.Resources.Culture">
+            <summary>
+              Overrides the current thread's CurrentUICulture property for all
+              resource lookups using this strongly typed resource class.
+            </summary>
+        </member>
+        <member name="F:EventAI_Creator.MyUserInfo.passwd">
+            &lt;summary&gt;
+            Holds the user password
+            &lt;/summary&gt;
+        </member>
+        <member name="M:EventAI_Creator.MyUserInfo.getPassword">
+            &lt;summary&gt;
+            Returns the user password
+            &lt;/summary&gt;
+        </member>
+        <member name="M:EventAI_Creator.MyUserInfo.promptYesNo(System.String)">
+            &lt;summary&gt;
+            Prompt the user for a Yes/No input
+            &lt;/summary&gt;
+        </member>
+        <member name="M:EventAI_Creator.MyUserInfo.getPassphrase">
+            &lt;summary&gt;
+            Returns the user passphrase (passwd for the private key file)
+            &lt;/summary&gt;
+        </member>
+        <member name="M:EventAI_Creator.MyUserInfo.promptPassphrase(System.String)">
+            &lt;summary&gt;
+            Prompt the user for a passphrase (passwd for the private key file)
+            &lt;/summary&gt;
+        </member>
+        <member name="M:EventAI_Creator.MyUserInfo.promptPassword(System.String)">
+            &lt;summary&gt;
+            Prompt the user for a password
+            &lt;/summary&gt;
+        </member>
+        <member name="M:EventAI_Creator.MyUserInfo.showMessage(System.String)">
+            &lt;summary&gt;
+            Shows a message to the user
+            &lt;/summary&gt;
+        </member>
+    </members>
+</doc>
