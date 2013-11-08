@@ -176,7 +176,7 @@
                   <object class="GtkLabel" id="label4">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="label" translatable="yes">page 1</property>
+                    <property name="label" translatable="yes">Search</property>
                   </object>
                   <packing>
                     <property name="tab_fill">False</property>
@@ -189,7 +189,7 @@
                   <object class="GtkLabel" id="label5">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="label" translatable="yes">page 2</property>
+                    <property name="label" translatable="yes">Quest part 1</property>
                   </object>
                   <packing>
                     <property name="position">1</property>
@@ -203,10 +203,80 @@
                   <object class="GtkLabel" id="label6">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="label" translatable="yes">page 3</property>
+                    <property name="label" translatable="yes">Quest part 2</property>
                   </object>
                   <packing>
                     <property name="position">2</property>
+                    <property name="tab_fill">False</property>
+                  </packing>
+                </child>
+                <child>
+                  <placeholder/>
+                </child>
+                <child type="tab">
+                  <object class="GtkLabel" id="label11">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="label" translatable="yes">Quest givers</property>
+                  </object>
+                  <packing>
+                    <property name="position">3</property>
+                    <property name="tab_fill">False</property>
+                  </packing>
+                </child>
+                <child>
+                  <placeholder/>
+                </child>
+                <child type="tab">
+                  <object class="GtkLabel" id="label12">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="label" translatable="yes">Quest takers</property>
+                  </object>
+                  <packing>
+                    <property name="position">4</property>
+                    <property name="tab_fill">False</property>
+                  </packing>
+                </child>
+                <child>
+                  <placeholder/>
+                </child>
+                <child type="tab">
+                  <object class="GtkLabel" id="label13">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="label" translatable="yes">Start script</property>
+                  </object>
+                  <packing>
+                    <property name="position">5</property>
+                    <property name="tab_fill">False</property>
+                  </packing>
+                </child>
+                <child>
+                  <placeholder/>
+                </child>
+                <child type="tab">
+                  <object class="GtkLabel" id="label14">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="label" translatable="yes">Complete script</property>
+                  </object>
+                  <packing>
+                    <property name="position">6</property>
+                    <property name="tab_fill">False</property>
+                  </packing>
+                </child>
+                <child>
+                  <placeholder/>
+                </child>
+                <child type="tab">
+                  <object class="GtkLabel" id="label15">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="label" translatable="yes">SQL code</property>
+                  </object>
+                  <packing>
+                    <property name="position">7</property>
                     <property name="tab_fill">False</property>
                   </packing>
                 </child>
@@ -223,7 +293,222 @@
               </packing>
             </child>
             <child>
-              <placeholder/>
+              <object class="GtkNotebook" id="notebook3">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <child>
+                  <placeholder/>
+                </child>
+                <child type="tab">
+                  <object class="GtkLabel" id="label16">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="label" translatable="yes">Search</property>
+                  </object>
+                  <packing>
+                    <property name="tab_fill">False</property>
+                  </packing>
+                </child>
+                <child>
+                  <placeholder/>
+                </child>
+                <child type="tab">
+                  <object class="GtkLabel" id="label17">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="label" translatable="yes">Creature template</property>
+                  </object>
+                  <packing>
+                    <property name="position">1</property>
+                    <property name="tab_fill">False</property>
+                  </packing>
+                </child>
+                <child>
+                  <placeholder/>
+                </child>
+                <child type="tab">
+                  <object class="GtkLabel" id="label18">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="label" translatable="yes">Creature location</property>
+                  </object>
+                  <packing>
+                    <property name="position">2</property>
+                    <property name="tab_fill">False</property>
+                  </packing>
+                </child>
+                <child>
+                  <placeholder/>
+                </child>
+                <child type="tab">
+                  <object class="GtkLabel" id="label19">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="label" translatable="yes">Model info</property>
+                  </object>
+                  <packing>
+                    <property name="position">3</property>
+                    <property name="tab_fill">False</property>
+                  </packing>
+                </child>
+                <child>
+                  <placeholder/>
+                </child>
+                <child type="tab">
+                  <object class="GtkLabel" id="label20">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="label" translatable="yes">Equip template</property>
+                  </object>
+                  <packing>
+                    <property name="position">4</property>
+                    <property name="tab_fill">False</property>
+                  </packing>
+                </child>
+                <child>
+                  <placeholder/>
+                </child>
+                <child type="tab">
+                  <object class="GtkLabel" id="label21">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="label" translatable="yes">Creature loot</property>
+                  </object>
+                  <packing>
+                    <property name="position">5</property>
+                    <property name="tab_fill">False</property>
+                  </packing>
+                </child>
+                <child>
+                  <placeholder/>
+                </child>
+                <child type="tab">
+                  <object class="GtkLabel" id="label22">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="label" translatable="yes">Pickpocket loot</property>
+                  </object>
+                  <packing>
+                    <property name="position">6</property>
+                    <property name="tab_fill">False</property>
+                  </packing>
+                </child>
+                <child>
+                  <placeholder/>
+                </child>
+                <child type="tab">
+                  <object class="GtkLabel" id="label23">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="label" translatable="yes">Skin loot</property>
+                  </object>
+                  <packing>
+                    <property name="position">7</property>
+                    <property name="tab_fill">False</property>
+                  </packing>
+                </child>
+                <child>
+                  <placeholder/>
+                </child>
+                <child type="tab">
+                  <object class="GtkLabel" id="label24">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="label" translatable="yes">Creature template addon</property>
+                  </object>
+                  <packing>
+                    <property name="position">8</property>
+                    <property name="tab_fill">False</property>
+                  </packing>
+                </child>
+                <child>
+                  <placeholder/>
+                </child>
+                <child type="tab">
+                  <object class="GtkLabel" id="label26">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="label" translatable="yes">Creature addon</property>
+                  </object>
+                  <packing>
+                    <property name="position">9</property>
+                    <property name="tab_fill">False</property>
+                  </packing>
+                </child>
+                <child>
+                  <placeholder/>
+                </child>
+                <child type="tab">
+                  <object class="GtkLabel" id="label25">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="label" translatable="yes">Npc gossip</property>
+                  </object>
+                  <packing>
+                    <property name="position">10</property>
+                    <property name="tab_fill">False</property>
+                  </packing>
+                </child>
+                <child>
+                  <placeholder/>
+                </child>
+                <child type="tab">
+                  <object class="GtkLabel" id="label27">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="label" translatable="yes">Creature movement</property>
+                  </object>
+                  <packing>
+                    <property name="position">11</property>
+                    <property name="tab_fill">False</property>
+                  </packing>
+                </child>
+                <child>
+                  <placeholder/>
+                </child>
+                <child type="tab">
+                  <object class="GtkLabel" id="label28">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="label" translatable="yes">On kill relation</property>
+                  </object>
+                  <packing>
+                    <property name="position">12</property>
+                    <property name="tab_fill">False</property>
+                  </packing>
+                </child>
+                <child>
+                  <placeholder/>
+                </child>
+                <child type="tab">
+                  <object class="GtkLabel" id="label29">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="label" translatable="yes">Involved in</property>
+                  </object>
+                  <packing>
+                    <property name="position">13</property>
+                    <property name="tab_fill">False</property>
+                  </packing>
+                </child>
+                <child>
+                  <placeholder/>
+                </child>
+                <child type="tab">
+                  <object class="GtkLabel" id="label30">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="label" translatable="yes">Script</property>
+                  </object>
+                  <packing>
+                    <property name="position">14</property>
+                    <property name="tab_fill">False</property>
+                  </packing>
+                </child>
+              </object>
+              <packing>
+                <property name="position">1</property>
+              </packing>
             </child>
             <child type="tab">
               <object class="GtkLabel" id="label2">
@@ -237,7 +522,54 @@
               </packing>
             </child>
             <child>
-              <placeholder/>
+              <object class="GtkNotebook" id="notebook4">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <child>
+                  <placeholder/>
+                </child>
+                <child type="tab">
+                  <object class="GtkLabel" id="label31">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="label" translatable="yes">page 1</property>
+                  </object>
+                  <packing>
+                    <property name="tab_fill">False</property>
+                  </packing>
+                </child>
+                <child>
+                  <placeholder/>
+                </child>
+                <child type="tab">
+                  <object class="GtkLabel" id="label32">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="label" translatable="yes">page 2</property>
+                  </object>
+                  <packing>
+                    <property name="position">1</property>
+                    <property name="tab_fill">False</property>
+                  </packing>
+                </child>
+                <child>
+                  <placeholder/>
+                </child>
+                <child type="tab">
+                  <object class="GtkLabel" id="label33">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="label" translatable="yes">page 3</property>
+                  </object>
+                  <packing>
+                    <property name="position">2</property>
+                    <property name="tab_fill">False</property>
+                  </packing>
+                </child>
+              </object>
+              <packing>
+                <property name="position">2</property>
+              </packing>
             </child>
             <child type="tab">
               <object class="GtkLabel" id="label3">

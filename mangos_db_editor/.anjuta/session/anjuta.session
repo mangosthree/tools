@@ -3,7 +3,7 @@ Maximized=1
 Geometry=1280x977+0+0
 
 [Project Manager]
-Shortcut=mangos_db_editor
+Shortcut=mangos_db_editor//src//mangos_db_editor
 
 [File Loader]
 Files=../../src/main.c#17%%%../../src/mangos_db_editor.ui
