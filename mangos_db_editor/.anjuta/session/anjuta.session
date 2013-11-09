@@ -3,7 +3,7 @@ Maximized=1
 Geometry=1280x977+0+0
 
 [Project Manager]
-Shortcut=mangos_db_editor//src//mangos_db_editor
+Shortcut=mangos_db_editor
 
 [File Loader]
 Files=../../src/main.c#17%%%../../src/mangos_db_editor.ui
@@ -12,6 +12,8 @@ Files=../../src/main.c#17%%%../../src/mangos_db_editor.ui
 bookmarks=<?xml version="1.0" encoding="UTF-8"?>\n<bookmarks/>\n
 
 [Execution]
+Program arguments=
+Program uri=../../Debug/src/mangos_db_editor
 Run in terminal=2
 Working directories=../../../mangos_db_editor
 
