@@ -7,8 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using System.IO;
-using MySql.Data;
-using MySql.Data.MySqlClient;
+using MySqlConnector;
 
 namespace EventAI_Creator.GUI.General
 {

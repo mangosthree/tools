@@ -312,27 +312,27 @@
             this.toFileToolStripMenuItem1,
             this.toWindowToolStripMenuItem});
             this.saveThisTextToolStripMenuItem.Name = "saveThisTextToolStripMenuItem";
-            this.saveThisTextToolStripMenuItem.Size = new System.Drawing.Size(145, 22);
+            this.saveThisTextToolStripMenuItem.Size = new System.Drawing.Size(144, 22);
             this.saveThisTextToolStripMenuItem.Text = "To";
             // 
             // toDBToolStripMenuItem1
             // 
             this.toDBToolStripMenuItem1.Name = "toDBToolStripMenuItem1";
-            this.toDBToolStripMenuItem1.Size = new System.Drawing.Size(135, 22);
+            this.toDBToolStripMenuItem1.Size = new System.Drawing.Size(133, 22);
             this.toDBToolStripMenuItem1.Text = "To DB";
             this.toDBToolStripMenuItem1.Click += new System.EventHandler(this.toDBToolStripMenuItem1_Click);
             // 
             // toFileToolStripMenuItem1
             // 
             this.toFileToolStripMenuItem1.Name = "toFileToolStripMenuItem1";
-            this.toFileToolStripMenuItem1.Size = new System.Drawing.Size(135, 22);
+            this.toFileToolStripMenuItem1.Size = new System.Drawing.Size(133, 22);
             this.toFileToolStripMenuItem1.Text = "To File";
             this.toFileToolStripMenuItem1.Click += new System.EventHandler(this.toFileToolStripMenuItem1_Click);
             // 
             // toWindowToolStripMenuItem
             // 
             this.toWindowToolStripMenuItem.Name = "toWindowToolStripMenuItem";
-            this.toWindowToolStripMenuItem.Size = new System.Drawing.Size(135, 22);
+            this.toWindowToolStripMenuItem.Size = new System.Drawing.Size(133, 22);
             this.toWindowToolStripMenuItem.Text = "To Window";
             this.toWindowToolStripMenuItem.Click += new System.EventHandler(this.toWindowToolStripMenuItem_Click);
             // 
@@ -342,27 +342,27 @@
             this.toDBToolStripMenuItem,
             this.toFileToolStripMenuItem});
             this.saveAllTextsToolStripMenuItem.Name = "saveAllTextsToolStripMenuItem";
-            this.saveAllTextsToolStripMenuItem.Size = new System.Drawing.Size(145, 22);
+            this.saveAllTextsToolStripMenuItem.Size = new System.Drawing.Size(144, 22);
             this.saveAllTextsToolStripMenuItem.Text = "Save All Texts";
             // 
             // toDBToolStripMenuItem
             // 
             this.toDBToolStripMenuItem.Name = "toDBToolStripMenuItem";
-            this.toDBToolStripMenuItem.Size = new System.Drawing.Size(109, 22);
+            this.toDBToolStripMenuItem.Size = new System.Drawing.Size(107, 22);
             this.toDBToolStripMenuItem.Text = "To DB";
             this.toDBToolStripMenuItem.Click += new System.EventHandler(this.toDBToolStripMenuItem_Click);
             // 
             // toFileToolStripMenuItem
             // 
             this.toFileToolStripMenuItem.Name = "toFileToolStripMenuItem";
-            this.toFileToolStripMenuItem.Size = new System.Drawing.Size(109, 22);
+            this.toFileToolStripMenuItem.Size = new System.Drawing.Size(107, 22);
             this.toFileToolStripMenuItem.Text = "To File";
             this.toFileToolStripMenuItem.Click += new System.EventHandler(this.toFileToolStripMenuItem_Click);
             // 
             // deleteThisTextToolStripMenuItem
             // 
             this.deleteThisTextToolStripMenuItem.Name = "deleteThisTextToolStripMenuItem";
-            this.deleteThisTextToolStripMenuItem.Size = new System.Drawing.Size(102, 20);
+            this.deleteThisTextToolStripMenuItem.Size = new System.Drawing.Size(100, 20);
             this.deleteThisTextToolStripMenuItem.Text = "Delete This Text";
             this.deleteThisTextToolStripMenuItem.Click += new System.EventHandler(this.button_delete_Click);
             // 
@@ -761,6 +761,7 @@
             this.Controls.Add(this.textboxsearch);
             this.Controls.Add(this.Search);
             this.Controls.Add(this.menuStrip1);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "TEXTEditor";
             this.ShowIcon = false;
             this.Text = "Texts Editor";

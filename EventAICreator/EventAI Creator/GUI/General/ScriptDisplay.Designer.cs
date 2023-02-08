@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ScriptDisplay));
             this.button_copy = new System.Windows.Forms.Button();
             this.button_close = new System.Windows.Forms.Button();
             this.textBox_query = new System.Windows.Forms.TextBox();
@@ -84,6 +85,7 @@
             this.Controls.Add(this.textBox_query);
             this.Controls.Add(this.button_close);
             this.Controls.Add(this.button_copy);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "ScriptDisplay";
             this.ShowIcon = false;
             this.Text = "Script Display";

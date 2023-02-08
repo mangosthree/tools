@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(EventFlag));
             this.button_flag_ok = new System.Windows.Forms.Button();
             this.checkedListBox_flags = new System.Windows.Forms.CheckedListBox();
             this.SuspendLayout();
@@ -58,6 +59,7 @@
             this.ClientSize = new System.Drawing.Size(234, 193);
             this.Controls.Add(this.checkedListBox_flags);
             this.Controls.Add(this.button_flag_ok);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "EventFlag";
             this.ShowIcon = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;

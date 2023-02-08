@@ -40,7 +40,7 @@ namespace EventAI_Creator.GUI.General
             }
             else
             {
-                if(SQLConnection.Connect(tboxmysqlhost.Text, tboxmysqlname.Text, tboxmysqlpw.Text, /*tboxmysqlsd2db.Text,*/ tboxmysqlwordldb.Text))
+                if(SQLConnection.Connect(tboxmysqlhost.Text, tboxmysqlname.Text, tboxmysqlpw.Text, tboxmysqlwordldb.Text))
                 {
                     Datastores.dbused = true;
                     this.Close();

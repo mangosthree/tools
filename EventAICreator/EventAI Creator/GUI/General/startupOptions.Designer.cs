@@ -306,8 +306,8 @@
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "eAICreator";
             this.Text = "MaNGOS script development tool";
-            this.Load += new System.EventHandler(this.eAICreator_Load);
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.eAICreator_FormClosing);
+            this.Load += new System.EventHandler(this.eAICreator_Load);
             this.mysqlgroupbox.ResumeLayout(false);
             this.mysqlgroupbox.PerformLayout();
             this.sshgroupbox.ResumeLayout(false);

@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ControlPanel));
             this.setallscriptnames = new System.Windows.Forms.Button();
             this.removescriptnames = new System.Windows.Forms.Button();
             this.updateofficialDB = new System.Windows.Forms.Button();
@@ -125,6 +126,7 @@
             this.Controls.Add(this.updateofficialDB);
             this.Controls.Add(this.removescriptnames);
             this.Controls.Add(this.setallscriptnames);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "ControlPanel";
             this.ShowIcon = false;
             this.Text = "Control Panel";

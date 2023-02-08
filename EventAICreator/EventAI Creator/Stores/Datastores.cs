@@ -3,14 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.IO;
-using MySql.Data;
 
 using System.Net;
 using System.Net.Sockets;
 using System.Globalization;
 using Tamir.SharpSsh.jsch;
 using Tamir.SharpSsh.jsch.jce;
-using MySql.Data.MySqlClient;
+using MySqlConnector;
 using System.Windows.Forms;
 
 namespace EventAI_Creator
@@ -129,6 +128,7 @@ namespace EventAI_Creator
                 }
 
                 // Select all creature AI texts
+                reader.Close();
                 c.CommandText = "SELECT * FROM creature_ai_texts";
                 reader.Close();
 

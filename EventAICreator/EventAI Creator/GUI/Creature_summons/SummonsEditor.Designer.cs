@@ -275,21 +275,21 @@
             // toDBToolStripMenuItem1
             // 
             this.toDBToolStripMenuItem1.Name = "toDBToolStripMenuItem1";
-            this.toDBToolStripMenuItem1.Size = new System.Drawing.Size(135, 22);
+            this.toDBToolStripMenuItem1.Size = new System.Drawing.Size(133, 22);
             this.toDBToolStripMenuItem1.Text = "To DB";
             this.toDBToolStripMenuItem1.Click += new System.EventHandler(this.toDBToolStripMenuItem1_Click);
             // 
             // toSQLFileToolStripMenuItem1
             // 
             this.toSQLFileToolStripMenuItem1.Name = "toSQLFileToolStripMenuItem1";
-            this.toSQLFileToolStripMenuItem1.Size = new System.Drawing.Size(135, 22);
+            this.toSQLFileToolStripMenuItem1.Size = new System.Drawing.Size(133, 22);
             this.toSQLFileToolStripMenuItem1.Text = "To SQL File";
             this.toSQLFileToolStripMenuItem1.Click += new System.EventHandler(this.toSQLFileToolStripMenuItem1_Click);
             // 
             // toToolStripMenuItem
             // 
             this.toToolStripMenuItem.Name = "toToolStripMenuItem";
-            this.toToolStripMenuItem.Size = new System.Drawing.Size(135, 22);
+            this.toToolStripMenuItem.Size = new System.Drawing.Size(133, 22);
             this.toToolStripMenuItem.Text = "To Window";
             this.toToolStripMenuItem.Click += new System.EventHandler(this.toToolStripMenuItem_Click);
             // 
@@ -305,14 +305,14 @@
             // toDBToolStripMenuItem
             // 
             this.toDBToolStripMenuItem.Name = "toDBToolStripMenuItem";
-            this.toDBToolStripMenuItem.Size = new System.Drawing.Size(133, 22);
+            this.toDBToolStripMenuItem.Size = new System.Drawing.Size(131, 22);
             this.toDBToolStripMenuItem.Text = "To DB";
             this.toDBToolStripMenuItem.Click += new System.EventHandler(this.toDBToolStripMenuItem_Click);
             // 
             // toSQLFileToolStripMenuItem
             // 
             this.toSQLFileToolStripMenuItem.Name = "toSQLFileToolStripMenuItem";
-            this.toSQLFileToolStripMenuItem.Size = new System.Drawing.Size(133, 22);
+            this.toSQLFileToolStripMenuItem.Size = new System.Drawing.Size(131, 22);
             this.toSQLFileToolStripMenuItem.Text = "To SQL File";
             this.toSQLFileToolStripMenuItem.Click += new System.EventHandler(this.toSQLFileToolStripMenuItem_Click);
             // 
@@ -463,6 +463,7 @@
             this.Controls.Add(this.textboxsearch);
             this.Controls.Add(this.Search);
             this.Controls.Add(this.menuStrip1);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "SummonsEditor";
             this.ShowIcon = false;
