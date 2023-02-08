@@ -1,8 +1,0 @@
-Its a new mangos db edit tool, creation of this tool is still in progress.
-Do not notify any compile errors or issues right now, all will announced about complete work.
-
-Interface is going to be like as old quice editor, but with better multiplatform support, new toolbox, expanded configuration and even with full documentation from our wiki.
-
-Going to support all mangos branches (mangos zero, one, two, three, four projects) and also may cmangos too.
-
-Any other suggestions are welcome.
