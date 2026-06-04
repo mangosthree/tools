@@ -201,40 +201,13 @@ namespace MaNGOSPatcher
 
                 if (isPatch && t.IsUnpatched)
                 {
-                    foreach (PatchBytes p in t.Patches)
-                    {
-                        System.Buffer.BlockCopy(p.Patched, 0, t.Data, p.Offset, p.Patched.Length);
-                    }
-                    try { File.Delete(t.BackupFile); } catch { }
-                    try { File.Move(t.FileName, t.BackupFile); } catch { }
-
-                    if (WriteByteArrayToFile(t.Data, t.FileName))
-                    {
-                        report.AppendFormat("Patched {0} (backup: {1})\n", t.FileName, t.BackupFile);
-                    }
-                    else
-                    {
-                        report.AppendFormat("ERROR writing {0}\n", t.FileName);
+                    if (!PatchTargetFile(t, report))
                         overallSuccess = false;
-                    }
                 }
                 else if (!isPatch && t.IsPatched)
                 {
-                    foreach (PatchBytes p in t.Patches)
-                    {
-                        System.Buffer.BlockCopy(p.Unpatched, 0, t.Data, p.Offset, p.Unpatched.Length);
-                    }
-                    try { File.Delete(t.FileName); File.Delete(t.BackupFile); } catch { }
-
-                    if (WriteByteArrayToFile(t.Data, t.FileName))
-                    {
-                        report.AppendFormat("Restored {0}\n", t.FileName);
-                    }
-                    else
-                    {
-                        report.AppendFormat("ERROR writing {0}\n", t.FileName);
+                    if (!UnpatchTargetFile(t, report))
                         overallSuccess = false;
-                    }
                 }
             }
 
@@ -251,6 +224,150 @@ namespace MaNGOSPatcher
             }
             richTextBox1.AppendText("Done.\n\n");
             RefreshState();
+        }
+
+        private bool PatchTargetFile(PatchTarget t, StringBuilder report)
+        {
+            if (!TryDeleteExistingFile(t.BackupFile, t.FileName, "old backup", report))
+                return false;
+
+            try
+            {
+                File.Move(t.FileName, t.BackupFile);
+            }
+            catch (Exception ex)
+            {
+                report.AppendFormat("SKIPPED {0}: could not create backup {1}: {2}\n",
+                    t.FileName, t.BackupFile, ex.Message);
+                return false;
+            }
+
+            byte[] patchedData = CreatePatchedCopy(t, true);
+            if (WriteByteArrayToFile(patchedData, t.FileName))
+            {
+                report.AppendFormat("Patched {0} (backup: {1})\n", t.FileName, t.BackupFile);
+                return true;
+            }
+
+            report.AppendFormat("ERROR writing {0}; backup remains at {1}\n", t.FileName, t.BackupFile);
+            TryRestoreOriginalAfterPatchWriteFailure(t, report);
+            return false;
+        }
+
+        private bool UnpatchTargetFile(PatchTarget t, StringBuilder report)
+        {
+            string restoreFile = t.FileName + ".restore.tmp";
+            string patchedFile = t.FileName + ".patched.tmp";
+
+            if (!TryDeleteExistingFile(restoreFile, t.FileName, "temporary restore file", report))
+                return false;
+            if (!TryDeleteExistingFile(patchedFile, t.FileName, "temporary patched file", report))
+                return false;
+
+            byte[] unpatchedData = CreatePatchedCopy(t, false);
+            if (!WriteByteArrayToFile(unpatchedData, restoreFile))
+            {
+                report.AppendFormat("ERROR preparing restored copy for {0}\n", t.FileName);
+                return false;
+            }
+
+            try
+            {
+                File.Move(t.FileName, patchedFile);
+            }
+            catch (Exception ex)
+            {
+                TryDeleteFile(restoreFile, report, t.FileName, "temporary restore file");
+                report.AppendFormat("SKIPPED {0}: could not move patched file aside: {1}\n",
+                    t.FileName, ex.Message);
+                return false;
+            }
+
+            try
+            {
+                File.Move(restoreFile, t.FileName);
+            }
+            catch (Exception ex)
+            {
+                report.AppendFormat("ERROR restoring {0}: {1}\n", t.FileName, ex.Message);
+                try
+                {
+                    File.Move(patchedFile, t.FileName);
+                    report.AppendFormat("Restored patched copy of {0} after unpatch failure.\n", t.FileName);
+                }
+                catch (Exception rollbackEx)
+                {
+                    report.AppendFormat("ERROR restoring patched copy of {0}: {1}\n",
+                        t.FileName, rollbackEx.Message);
+                }
+                return false;
+            }
+
+            TryDeleteFile(patchedFile, report, t.FileName, "temporary patched file");
+            TryDeleteFile(t.BackupFile, report, t.FileName, "backup");
+            report.AppendFormat("Restored {0}\n", t.FileName);
+            return true;
+        }
+
+        private byte[] CreatePatchedCopy(PatchTarget t, bool usePatchedBytes)
+        {
+            byte[] data = (byte[])t.Data.Clone();
+            foreach (PatchBytes p in t.Patches)
+            {
+                byte[] source = usePatchedBytes ? p.Patched : p.Unpatched;
+                System.Buffer.BlockCopy(source, 0, data, p.Offset, source.Length);
+            }
+            return data;
+        }
+
+        private bool TryDeleteExistingFile(string fileName, string targetName, string description, StringBuilder report)
+        {
+            if (!File.Exists(fileName))
+                return true;
+
+            try
+            {
+                File.Delete(fileName);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                report.AppendFormat("SKIPPED {0}: could not delete {1} {2}: {3}\n",
+                    targetName, description, fileName, ex.Message);
+                return false;
+            }
+        }
+
+        private void TryDeleteFile(string fileName, StringBuilder report, string targetName, string description)
+        {
+            if (!File.Exists(fileName))
+                return;
+
+            try
+            {
+                File.Delete(fileName);
+            }
+            catch (Exception ex)
+            {
+                report.AppendFormat("WARNING {0}: could not delete {1} {2}: {3}\n",
+                    targetName, description, fileName, ex.Message);
+            }
+        }
+
+        private void TryRestoreOriginalAfterPatchWriteFailure(PatchTarget t, StringBuilder report)
+        {
+            try
+            {
+                if (File.Exists(t.FileName))
+                    File.Delete(t.FileName);
+                File.Copy(t.BackupFile, t.FileName);
+                report.AppendFormat("Restored original {0} from backup after write failure.\n", t.FileName);
+            }
+            catch (Exception ex)
+            {
+                report.AppendFormat("ERROR restoring original {0} from backup: {1}\n",
+                    t.FileName, ex.Message);
+            }
         }
 
         public byte[] ReadByteArrayFromFile(string fileName)

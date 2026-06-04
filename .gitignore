@@ -3,5 +3,5 @@ bin
 obj
 *.pdb
 
-# Client binaries — do not commit or distribute patched/unpatched game executables
+# Client binaries - do not commit or distribute patched/unpatched game executables
 *.exe
