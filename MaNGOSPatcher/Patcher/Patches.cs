@@ -49,5 +49,28 @@ namespace MaNGOSatcher
                                        new byte[] { 0xEB }));
         }
     }
+
+    class Patch434Win64 : PatchInfo
+    {
+        protected override void Init()
+        {
+            ExeLength = 13592144;
+
+            // Patch #2a: Send function - NOP the je that skips type=0 path
+            Patches.Add(new PatchBytes(0xAAB6F,
+                                       new byte[] { 0x74, 0x08 },
+                                       new byte[] { 0x90, 0x90 }));
+
+            // Patch #2b: Send function - xor edx, edx to force type=0
+            Patches.Add(new PatchBytes(0xAAB71,
+                                       new byte[] { 0x41, 0x8B, 0xD5 },
+                                       new byte[] { 0x31, 0xD2, 0x90 }));
+
+            // Patch #3: NetClient - force connection[0] lookup
+            Patches.Add(new PatchBytes(0xA9AD3,
+                                       new byte[] { 0x74, 0x10 },
+                                       new byte[] { 0xEB, 0x10 }));
+        }
+    }
 }
 	

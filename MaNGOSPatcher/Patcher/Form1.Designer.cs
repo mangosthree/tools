@@ -29,7 +29,7 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
+            System.Drawing.Icon appIcon = System.Drawing.Icon.ExtractAssociatedIcon(System.Windows.Forms.Application.ExecutablePath);
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.richTextBox1 = new System.Windows.Forms.RichTextBox();
             this.label2 = new System.Windows.Forms.Label();
@@ -90,7 +90,10 @@
             // 
             // notifyIcon1
             // 
-            this.notifyIcon1.Icon = ((System.Drawing.Icon)(resources.GetObject("notifyIcon1.Icon")));
+            if (appIcon != null)
+            {
+                this.notifyIcon1.Icon = appIcon;
+            }
             this.notifyIcon1.Text = "MaNGOS 4.3.4 Patcher ";
             this.notifyIcon1.Visible = true;
             // 
@@ -104,7 +107,10 @@
             this.Controls.Add(this.button1);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.groupBox1);
-            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            if (appIcon != null)
+            {
+                this.Icon = appIcon;
+            }
             this.Name = "Form1";
             this.Text = "MaNGOSPatcher";
             this.Load += new System.EventHandler(this.Form1_Load);
