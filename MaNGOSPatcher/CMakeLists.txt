@@ -122,11 +122,15 @@ if(WINDEPLOYQT_EXE)
         if(NOT _mp_deploy_result EQUAL 0)
             message(FATAL_ERROR \"windeployqt failed with exit code \${_mp_deploy_result}\")
         endif()
+        # Qt 6.10 uses the ICU runtime supplied by supported Windows
+        # versions. windeployqt may copy it from System32; do not
+        # redistribute that operating-system component.
         file(REMOVE
             \"\${CMAKE_INSTALL_PREFIX}/dxcompiler.dll\"
             \"\${CMAKE_INSTALL_PREFIX}/dxil.dll\"
             \"\${CMAKE_INSTALL_PREFIX}/opengl32sw.dll\"
-            \"\${CMAKE_INSTALL_PREFIX}/D3Dcompiler_47.dll\")
+            \"\${CMAKE_INSTALL_PREFIX}/D3Dcompiler_47.dll\"
+            \"\${CMAKE_INSTALL_PREFIX}/icuuc.dll\")
     ")
 endif()
 

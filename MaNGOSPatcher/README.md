@@ -39,6 +39,8 @@ clean 4.3.4.15595 executable, and then run the patcher again.
 
 ## Prerequisites
 
+- Windows 10 or newer. Qt 6.10 uses the operating system's `icuuc.dll`; the
+  deployable folder intentionally does not redistribute that Windows component.
 - Qt 6 (developed and packaged with 6.10.1, `msvc2022_64`)
 - CMake 3.21 or newer
 - Visual Studio 2026 or 2022 with the C++ toolset
