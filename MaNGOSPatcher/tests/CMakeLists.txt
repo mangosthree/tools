@@ -1,4 +1,9 @@
 function(stage_qt_test_runtime target)
+    # Qt marks executables as GUI applications on Windows by default. Tests
+    # need a console subsystem so CTest can capture Qt Test diagnostics rather
+    # than losing them to the debugger output channel.
+    set_target_properties(${target} PROPERTIES WIN32_EXECUTABLE FALSE)
+
     set(_qt_runtime_targets Qt6::Core Qt6::Test ${ARGN})
     foreach(_qt_target IN LISTS _qt_runtime_targets)
         add_custom_command(TARGET ${target} POST_BUILD
