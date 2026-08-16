@@ -71,11 +71,38 @@ endif()
 install(TARGETS MaNGOSPatcher RUNTIME DESTINATION .)
 install(FILES "${CMAKE_CURRENT_SOURCE_DIR}/../LICENSE" DESTINATION .)
 
-# Bundle the MSVC runtime explicitly. windeployqt cannot reliably find it from
-# a Visual Studio POST_BUILD command because VCINSTALLDIR is not inherited.
+# Bundle the imported MSVC runtime DLLs explicitly. windeployqt cannot reliably
+# find them from a Visual Studio POST_BUILD command because VCINSTALLDIR is not
+# inherited. InstallRequiredSystemLibraries also discovers optional concurrency,
+# atomic-wait and codecvt DLLs that this executable/Qt import graph does not use,
+# so select only the five runtime DLLs present in that graph.
 if(MSVC)
     set(CMAKE_INSTALL_SYSTEM_RUNTIME_DESTINATION .)
+    set(CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS_SKIP TRUE)
     include(InstallRequiredSystemLibraries)
+
+    set(_mp_required_msvc_runtime_names
+        msvcp140.dll
+        msvcp140_1.dll
+        msvcp140_2.dll
+        vcruntime140.dll
+        vcruntime140_1.dll)
+    set(_mp_required_msvc_runtime_paths)
+    foreach(_mp_runtime_path IN LISTS CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS)
+        get_filename_component(_mp_runtime_name "${_mp_runtime_path}" NAME)
+        string(TOLOWER "${_mp_runtime_name}" _mp_runtime_name_lower)
+        if(_mp_runtime_name_lower IN_LIST _mp_required_msvc_runtime_names)
+            list(APPEND _mp_required_msvc_runtime_paths "${_mp_runtime_path}")
+        endif()
+    endforeach()
+    list(REMOVE_DUPLICATES _mp_required_msvc_runtime_paths)
+    list(LENGTH _mp_required_msvc_runtime_paths _mp_runtime_count)
+    if(NOT _mp_runtime_count EQUAL 5)
+        message(FATAL_ERROR
+            "Could not locate the five required MSVC runtime DLLs: "
+            "${_mp_required_msvc_runtime_names}")
+    endif()
+    install(PROGRAMS ${_mp_required_msvc_runtime_paths} DESTINATION .)
 endif()
 
 # The application uses Qt Core/Gui/Widgets only. Install the executable and a
