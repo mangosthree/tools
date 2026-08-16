@@ -1,0 +1,57 @@
+name: MaNGOSPatcher Linux
+
+on:
+  pull_request:
+    branches:
+      - master
+  push:
+    branches:
+      - master
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: mangospatcher-linux-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    name: Linux source build and tests
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v7
+
+      - name: Define build paths
+        run: |
+          echo "MANGOSPATCHER_BUILD_DIR=$RUNNER_TEMP/MaNGOSPatcher-build" >> "$GITHUB_ENV"
+          echo "MANGOSPATCHER_INSTALL_DIR=$RUNNER_TEMP/MaNGOSPatcher-install" >> "$GITHUB_ENV"
+
+      - name: Install build dependencies
+        run: |
+          sudo apt-get update -qq
+          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -qq \
+            cmake \
+            g++ \
+            ninja-build \
+            qt6-base-dev \
+            qt6-base-dev-tools \
+            qt6-qpa-plugins
+
+      - name: Build, test, and install
+        run: ./MaNGOSPatcher/build-linux.sh
+
+      - name: Validate installed files and source tree
+        run: |
+          test -x "$MANGOSPATCHER_INSTALL_DIR/MaNGOSPatcher"
+          test -f "$MANGOSPATCHER_INSTALL_DIR/LICENSE"
+          status="$(git status --porcelain --untracked-files=all)"
+          if [[ -n "$status" ]]; then
+            echo "::error::the build modified the source tree"
+            printf '%s\n' "$status"
+            exit 1
+          fi

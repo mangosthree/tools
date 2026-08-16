@@ -8,5 +8,7 @@ obj
 
 # MaNGOSPatcher local CMake outputs documented in MaNGOSPatcher/README.md
 /MaNGOSPatcher/build/
+/MaNGOSPatcher/build-linux/
 /MaNGOSPatcher/MaNGOSPatcher_install/
+/MaNGOSPatcher/install-linux/
 /MaNGOSPatcher_install/

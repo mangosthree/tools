@@ -39,6 +39,8 @@ clean 4.3.4.15595 executable, and then run the patcher again.
 
 ## Prerequisites
 
+### Windows
+
 - Windows 10 or newer. Qt 6.10 uses the operating system's `icuuc.dll`; the
   deployable folder intentionally does not redistribute that Windows component.
 - Qt 6 (developed and packaged with 6.10.1, `msvc2022_64`)
@@ -49,6 +51,8 @@ The patcher application is built as x64, but ordinary file operations let it
 patch both the x86 and x64 WoW executables.
 
 ## Build and test
+
+### Windows
 
 From this directory:
 
@@ -70,6 +74,28 @@ A normal build automatically refreshes a deployable
 `MaNGOSPatcher.exe`, the trimmed Qt runtime, the required Microsoft C++
 runtime DLLs, and `platforms/qwindows.dll`. Copy the whole folder into the
 WoW directory.
+
+### Linux source build
+
+On Ubuntu 24.04, install the native build dependencies and run the repository
+script:
+
+```bash
+sudo apt-get update
+sudo apt-get install cmake g++ ninja-build qt6-base-dev qt6-base-dev-tools qt6-qpa-plugins
+./build-linux.sh
+```
+
+The script configures a Release build in `build-linux`, runs all tests, and
+installs to `install-linux`. Set `MANGOSPATCHER_BUILD_DIR`,
+`MANGOSPATCHER_INSTALL_DIR`, or `MANGOSPATCHER_BUILD_TYPE` to override those
+defaults.
+
+This is a native source-build path, not an AppImage or portable Linux release.
+The resulting executable uses the Qt runtime supplied by the Linux
+distribution. Copy `install-linux/MaNGOSPatcher` into the WoW client directory
+before running it; the Windows executable and DLL package remains the supported
+published release.
 
 ## Real-client verification
 
