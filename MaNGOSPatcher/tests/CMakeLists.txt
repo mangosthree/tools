@@ -12,32 +12,32 @@ endfunction()
 qt_add_executable(test_smoke test_smoke.cpp)
 target_link_libraries(test_smoke PRIVATE Qt6::Test)
 stage_qt_test_runtime(test_smoke)
-add_test(NAME test_smoke COMMAND test_smoke)
+add_test(NAME test_smoke COMMAND test_smoke -o -,txt)
 
 qt_add_executable(test_patchtable test_patchtable.cpp)
 target_link_libraries(test_patchtable PRIVATE patchcore Qt6::Test)
 stage_qt_test_runtime(test_patchtable)
-add_test(NAME test_patchtable COMMAND test_patchtable)
+add_test(NAME test_patchtable COMMAND test_patchtable -o -,txt)
 
 qt_add_executable(test_engine test_engine.cpp)
 target_link_libraries(test_engine PRIVATE patchcore Qt6::Test)
 stage_qt_test_runtime(test_engine)
-add_test(NAME test_engine COMMAND test_engine)
+add_test(NAME test_engine COMMAND test_engine -o -,txt)
 
 qt_add_executable(test_fileops test_fileops.cpp)
 target_link_libraries(test_fileops PRIVATE patchcore Qt6::Test)
 stage_qt_test_runtime(test_fileops)
-add_test(NAME test_fileops COMMAND test_fileops)
+add_test(NAME test_fileops COMMAND test_fileops -o -,txt)
 
 qt_add_executable(test_integration test_integration.cpp)
 target_link_libraries(test_integration PRIVATE patchcore Qt6::Test)
 stage_qt_test_runtime(test_integration)
-add_test(NAME test_integration COMMAND test_integration)
+add_test(NAME test_integration COMMAND test_integration -o -,txt)
 
 qt_add_executable(test_mainwindow test_mainwindow.cpp)
 target_link_libraries(test_mainwindow PRIVATE patchgui Qt6::Widgets Qt6::Test)
 stage_qt_test_runtime(test_mainwindow Qt6::Gui Qt6::Widgets)
-add_test(NAME test_mainwindow COMMAND test_mainwindow)
+add_test(NAME test_mainwindow COMMAND test_mainwindow -o -,txt)
 set_tests_properties(test_mainwindow PROPERTIES ENVIRONMENT "QT_QPA_PLATFORM=offscreen")
 
 # The app deploy deliberately trims platforms/ down to qwindows.dll, but the line above
