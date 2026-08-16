@@ -1,0 +1,209 @@
+name: MaNGOSPatcher Windows
+
+on:
+  pull_request:
+    branches:
+      - master
+  push:
+    branches:
+      - master
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: mangospatcher-windows-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+env:
+  AQT_VERSION: 3.3.0
+  QT_VERSION: 6.10.1
+  QT_ARCH: win64_msvc2022_64
+  BUILD_CONFIGURATION: Release
+
+jobs:
+  validate:
+    name: Build, test, and validate package
+    runs-on: windows-2022
+    timeout-minutes: 45
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Define build paths
+        shell: pwsh
+        run: |
+          "QT_ROOT=$env:RUNNER_TEMP\Qt" >> $env:GITHUB_ENV
+          "QT_KIT=$env:RUNNER_TEMP\Qt\$env:QT_VERSION\msvc2022_64" >> $env:GITHUB_ENV
+          "BUILD_DIR=$env:RUNNER_TEMP\MaNGOSPatcher_build" >> $env:GITHUB_ENV
+          "STAGE_DIR=$env:RUNNER_TEMP\MaNGOSPatcher_package" >> $env:GITHUB_ENV
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Restore Qt cache
+        id: qt-cache
+        uses: actions/cache/restore@v4
+        with:
+          path: ${{ runner.temp }}\Qt\${{ env.QT_VERSION }}\msvc2022_64
+          key: ${{ runner.os }}-qt-${{ env.QT_VERSION }}-${{ env.QT_ARCH }}-aqt-${{ env.AQT_VERSION }}
+
+      - name: Install Qt
+        if: steps.qt-cache.outputs.cache-hit != 'true'
+        shell: pwsh
+        run: |
+          python -m pip install --quiet --disable-pip-version-check "aqtinstall==$env:AQT_VERSION"
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+          python -m aqt install-qt windows desktop $env:QT_VERSION $env:QT_ARCH --outputdir $env:QT_ROOT
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+      - name: Verify Qt installation
+        shell: pwsh
+        run: |
+          $required = @(
+            "$env:QT_KIT\bin\windeployqt.exe",
+            "$env:QT_KIT\lib\cmake\Qt6\Qt6Config.cmake"
+          )
+          foreach ($path in $required) {
+            if (-not (Test-Path -LiteralPath $path -PathType Leaf)) {
+              throw "Required Qt file was not found: $path"
+            }
+          }
+
+      - name: Save Qt cache on master
+        if: github.event_name == 'push' && github.ref == 'refs/heads/master' && steps.qt-cache.outputs.cache-hit != 'true'
+        uses: actions/cache/save@v4
+        with:
+          path: ${{ runner.temp }}\Qt\${{ env.QT_VERSION }}\msvc2022_64
+          key: ${{ steps.qt-cache.outputs.cache-primary-key }}
+
+      - name: Configure MaNGOSPatcher
+        shell: pwsh
+        run: |
+          cmake `
+            -S "$env:GITHUB_WORKSPACE\MaNGOSPatcher" `
+            -B $env:BUILD_DIR `
+            -G "Visual Studio 17 2022" `
+            -A x64 `
+            "-DCMAKE_PREFIX_PATH=$env:QT_KIT" `
+            "-DMANGOSPATCHER_BUILD_TESTS=ON" `
+            "-DCMAKE_INSTALL_PREFIX=$env:STAGE_DIR"
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+      - name: Build MaNGOSPatcher
+        shell: pwsh
+        run: |
+          cmake --build $env:BUILD_DIR --config $env:BUILD_CONFIGURATION
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+      - name: Run tests
+        shell: pwsh
+        run: |
+          $env:QT_QPA_PLATFORM = "offscreen"
+          $env:QT_QPA_PLATFORM_PLUGIN_PATH = "$env:QT_KIT\plugins\platforms"
+          $env:PATH = "$env:QT_KIT\bin;$env:PATH"
+
+          ctest `
+            --test-dir $env:BUILD_DIR `
+            -C $env:BUILD_CONFIGURATION `
+            --no-tests=error `
+            --output-on-failure
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+      - name: Install and validate package
+        shell: pwsh
+        run: |
+          cmake --install $env:BUILD_DIR --config $env:BUILD_CONFIGURATION
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+          $required = @(
+            "MaNGOSPatcher.exe",
+            "LICENSE",
+            "Qt6Core.dll",
+            "Qt6Gui.dll",
+            "Qt6Widgets.dll",
+            "msvcp140.dll",
+            "msvcp140_1.dll",
+            "msvcp140_2.dll",
+            "vcruntime140.dll",
+            "vcruntime140_1.dll",
+            "platforms\qwindows.dll"
+          )
+          $actual = @(
+            Get-ChildItem -LiteralPath $env:STAGE_DIR -File -Recurse |
+              ForEach-Object {
+                $_.FullName.Substring($env:STAGE_DIR.Length + 1).Replace('/', '\')
+              }
+          )
+          $difference = @(
+            Compare-Object ($required | Sort-Object) ($actual | Sort-Object)
+          )
+          if ($difference.Count -ne 0) {
+            $details = ($difference | ForEach-Object {
+              "$($_.SideIndicator) $($_.InputObject)"
+            }) -join "; "
+            throw "Installed package does not match the exact manifest: $details"
+          }
+
+          $originalPath = $env:PATH
+          $process = $null
+          try {
+            $env:PATH = "$env:SystemRoot\System32"
+            $process = Start-Process `
+              -FilePath "$env:STAGE_DIR\MaNGOSPatcher.exe" `
+              -WorkingDirectory $env:STAGE_DIR `
+              -WindowStyle Hidden `
+              -PassThru
+            if ($process.WaitForExit(5000)) {
+              throw "Installed patcher exited during standalone load smoke with code $($process.ExitCode)"
+            }
+          }
+          finally {
+            $env:PATH = $originalPath
+            if ($process -and -not $process.HasExited) {
+              Stop-Process -Id $process.Id
+              $process.WaitForExit()
+            }
+          }
+
+      - name: Check changed files and source tree
+        shell: pwsh
+        run: |
+          $event = Get-Content -Raw -LiteralPath $env:GITHUB_EVENT_PATH |
+            ConvertFrom-Json
+          if ($env:GITHUB_EVENT_NAME -eq "pull_request") {
+            $range = "$($event.pull_request.base.sha)...$($event.pull_request.head.sha)"
+          }
+          elseif ($env:GITHUB_EVENT_NAME -eq "push") {
+            $before = "$($event.before)"
+            $beforeExists = $false
+            if ($before -and $before -notmatch '^0+$') {
+              git cat-file -e "$before^{commit}" 2>$null
+              $beforeExists = $LASTEXITCODE -eq 0
+            }
+            if ($beforeExists) {
+              $range = "$before..$env:GITHUB_SHA"
+            }
+            else {
+              $range = "$env:GITHUB_SHA^..$env:GITHUB_SHA"
+            }
+          }
+          else {
+            $range = "$env:GITHUB_SHA^..$env:GITHUB_SHA"
+          }
+
+          git diff --check $range
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+          $status = @(git status --porcelain --untracked-files=all)
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          if ($status.Count -ne 0) {
+            throw "Build modified the source tree: $($status -join '; ')"
+          }
