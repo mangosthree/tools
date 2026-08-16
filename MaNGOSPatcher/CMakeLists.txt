@@ -96,4 +96,3 @@ add_custom_command(TARGET MaNGOSPatcher POST_BUILD
     COMMAND ${_mp_install_command}
     COMMENT "Installing MaNGOSPatcher to ${CMAKE_INSTALL_PREFIX}"
     VERBATIM)
-

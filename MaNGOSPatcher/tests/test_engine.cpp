@@ -123,4 +123,3 @@ private slots:
 
 QTEST_APPLESS_MAIN(TestEngine)
 #include "test_engine.moc"
-

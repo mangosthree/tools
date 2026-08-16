@@ -73,4 +73,3 @@ inline const QVector<BuildDef> &knownBuilds()
 }
 
 } // namespace patcher
-

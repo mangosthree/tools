@@ -12,4 +12,3 @@ private slots:
 
 QTEST_APPLESS_MAIN(TestSmoke)
 #include "test_smoke.moc"
-

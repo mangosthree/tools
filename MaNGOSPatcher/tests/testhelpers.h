@@ -69,4 +69,3 @@ inline QByteArray readFile(const QString &path)
 
 } // namespace test
 } // namespace patcher
-

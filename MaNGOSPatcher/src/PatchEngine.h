@@ -43,4 +43,3 @@ OpResult applyPatch(const QString &dir, const Target &t);
 OpResult applyUnpatch(const QString &dir, const Target &t);
 
 } // namespace patcher
-

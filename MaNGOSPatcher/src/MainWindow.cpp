@@ -224,4 +224,3 @@ void MainWindow::onActionClicked()
 }
 
 } // namespace patcher
-

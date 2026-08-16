@@ -149,4 +149,3 @@ private slots:
 
 QTEST_MAIN(TestMainWindow)
 #include "test_mainwindow.moc"
-

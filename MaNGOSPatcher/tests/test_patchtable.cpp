@@ -103,4 +103,3 @@ private slots:
 
 QTEST_APPLESS_MAIN(TestPatchTable)
 #include "test_patchtable.moc"
-

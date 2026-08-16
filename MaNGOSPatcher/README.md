@@ -100,4 +100,3 @@ trip.
 Do not copy only the patcher executable: the Qt DLLs and `platforms` folder
 are required. Blizzard executables and test fixtures are not distributed by
 this project.
-
