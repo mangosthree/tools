@@ -57,6 +57,7 @@ jobs:
       - name: Install Qt
         if: steps.qt-cache.outputs.cache-hit != 'true'
         shell: pwsh
+        working-directory: ${{ runner.temp }}
         run: |
           python -m pip install --quiet --disable-pip-version-check "aqtinstall==$env:AQT_VERSION"
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
