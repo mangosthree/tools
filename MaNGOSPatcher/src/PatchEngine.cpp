@@ -140,6 +140,19 @@ QVector<Target> discover(const QString &dir, const QVector<BuildDef> &builds)
         const QFileInfo info(path);
         if (!info.exists())
         {
+            const QFileInfo fileNameInfo(def.fileName);
+            const QString backupFileName =
+                fileNameInfo.completeBaseName() + "_backup." + fileNameInfo.suffix();
+            if (QFileInfo::exists(directory.filePath(backupFileName)))
+            {
+                targets.append({
+                    def.fileName,
+                    &def,
+                    TargetState::Mismatch,
+                    QString("  %1 is missing, but recovery backup %2 exists\n")
+                        .arg(def.fileName, backupFileName)
+                });
+            }
             continue;
         }
 
@@ -252,10 +265,16 @@ OpResult applyPatch(const QString &dir, const Target &target)
     QFile::remove(patchTempPath);
     {
         QFile output(patchTempPath);
-        if (!output.open(QIODevice::WriteOnly)
-            || output.write(patched) != patched.size())
+        bool prepared = output.open(QIODevice::WriteOnly);
+        if (prepared)
         {
-            output.close();
+            prepared = output.write(patched) == patched.size()
+                       && output.flush()
+                       && output.error() == QFileDevice::NoError;
+        }
+        output.close();
+        if (!prepared)
+        {
             QFile::remove(patchTempPath);
             return {
                 false,
@@ -291,8 +310,11 @@ OpResult applyPatch(const QString &dir, const Target &target)
         {
             return {
                 false,
-                QString("  error installing patched %1; original preserved as %2\n")
-                    .arg(target.fileName, backupName(target.fileName))
+                QString("  error installing patched %1; original remains as %2 and "
+                        "prepared image remains as %3\n")
+                    .arg(target.fileName,
+                         backupName(target.fileName),
+                         QFileInfo(patchTempPath).fileName())
             };
         }
         QFile::remove(patchTempPath);

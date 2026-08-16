@@ -42,7 +42,21 @@ private slots:
     void discoverIgnoresMissing()
     {
         QTemporaryDir tmp;
-        QCOMPARE(discover(tmp.path(), fakeBuilds()).size(), 0);
+        const QVector<BuildDef> builds = fakeBuilds();
+        QCOMPARE(discover(tmp.path(), builds).size(), 0);
+    }
+
+    void discoverReportsMissingExecutableWhenBackupExists()
+    {
+        QTemporaryDir tmp;
+        const QVector<BuildDef> builds = fakeBuilds();
+        writeFile(QDir(tmp.path()).filePath("Fake_backup.exe"), unpatchedBuf());
+
+        const QVector<Target> targets = discover(tmp.path(), builds);
+        QCOMPARE(targets.size(), 1);
+        QCOMPARE(targets[0].state, TargetState::Mismatch);
+        QVERIFY(targets[0].report.contains("missing"));
+        QVERIFY(targets[0].report.contains("Fake_backup.exe"));
     }
 
     void patchThenUnpatchRoundTrip()

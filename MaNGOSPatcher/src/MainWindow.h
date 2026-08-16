@@ -15,8 +15,8 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 public:
     explicit MainWindow(QWidget *parent = nullptr); // app dir + knownBuilds()
-    MainWindow(const QString &dir, const QVector<BuildDef> &builds,
-               QWidget *parent = nullptr);           // injected (tests)
+    MainWindow(const QString &dir, QVector<BuildDef> builds,
+               QWidget *parent = nullptr); // owns injected definitions
 
 private slots:
     void onActionClicked();
@@ -31,7 +31,7 @@ private:
     QPushButton *m_button = nullptr;
 
     QString m_dir;
-    const QVector<BuildDef> *m_builds;
+    QVector<BuildDef> m_builds;
 };
 
 } // namespace patcher

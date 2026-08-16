@@ -65,8 +65,9 @@ platform.
 
 A normal build automatically refreshes a deployable
 `MaNGOSPatcher_install` folder beside the build directory. It contains
-`MaNGOSPatcher.exe`, the trimmed Qt runtime, and
-`platforms/qwindows.dll`. Copy the whole folder into the WoW directory.
+`MaNGOSPatcher.exe`, the trimmed Qt runtime, the required Microsoft C++
+runtime DLLs, and `platforms/qwindows.dll`. Copy the whole folder into the
+WoW directory.
 
 ## Real-client verification
 

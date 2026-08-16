@@ -15,7 +15,13 @@ QString fixtureRoot()
 
 bool fixturesRequired()
 {
-    return qEnvironmentVariable("MANGOSPATCHER_REQUIRE_FIXTURES") == "1";
+    const QString value =
+        qEnvironmentVariable("MANGOSPATCHER_REQUIRE_FIXTURES").trimmed().toLower();
+    return !value.isEmpty()
+           && value != "0"
+           && value != "false"
+           && value != "off"
+           && value != "no";
 }
 
 QString fixturePath(const BuildDef &def)
@@ -78,11 +84,18 @@ QVector<qint64> expectedChangedOffsets(const QString &fileName)
         };
     }
 
-    return {
-        0xA9FAB,
-        0xAAB6F, 0xAAB70,
-        0xAAB71, 0xAAB72, 0xAAB73
-    };
+    if (fileName == "Wow-64.exe")
+    {
+        return {
+            0xA9FAB,
+            0xAAB6F, 0xAAB70,
+            0xAAB71, 0xAAB72, 0xAAB73
+        };
+    }
+
+    QTest::qFail(qPrintable("no expected delta list for " + fileName),
+                 __FILE__, __LINE__);
+    return {};
 }
 
 } // namespace

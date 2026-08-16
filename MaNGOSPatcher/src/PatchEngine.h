@@ -11,6 +11,7 @@ enum class TargetState { Unpatched, Patched, Mixed, Mismatch };
 
 const BuildDef *identifyBuild(qint64 fileSize,
                               const QVector<BuildDef> &builds = knownBuilds());
+const BuildDef *identifyBuild(qint64 fileSize, QVector<BuildDef> &&builds) = delete;
 
 struct ValidateResult
 {
@@ -32,6 +33,7 @@ struct Target
 
 QVector<Target> discover(const QString &dir,
                          const QVector<BuildDef> &builds = knownBuilds());
+QVector<Target> discover(const QString &dir, QVector<BuildDef> &&builds) = delete;
 
 struct OpResult
 {

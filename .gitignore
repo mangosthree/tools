@@ -5,3 +5,7 @@ obj
 
 # Client binaries - do not commit or distribute patched/unpatched game executables
 *.exe
+
+# MaNGOSPatcher local CMake outputs documented in MaNGOSPatcher/README.md
+/MaNGOSPatcher/build/
+/MaNGOSPatcher/MaNGOSPatcher_install/

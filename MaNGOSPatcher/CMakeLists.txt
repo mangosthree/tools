@@ -61,6 +61,13 @@ endif()
 
 install(TARGETS MaNGOSPatcher RUNTIME DESTINATION .)
 
+# Bundle the MSVC runtime explicitly. windeployqt cannot reliably find it from
+# a Visual Studio POST_BUILD command because VCINSTALLDIR is not inherited.
+if(MSVC)
+    set(CMAKE_INSTALL_SYSTEM_RUNTIME_DESTINATION .)
+    include(InstallRequiredSystemLibraries)
+endif()
+
 # The application uses Qt Core/Gui/Widgets only. Install the executable and a
 # minimal Windows runtime that can be copied as one folder into the WoW client.
 if(WINDEPLOYQT_EXE)

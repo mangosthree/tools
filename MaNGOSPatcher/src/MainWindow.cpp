@@ -10,6 +10,7 @@
 #include <QStringList>
 #include <QVBoxLayout>
 #include <QWidget>
+#include <utility>
 
 namespace patcher {
 namespace {
@@ -40,8 +41,8 @@ MainWindow::MainWindow(QWidget *parent)
 {
 }
 
-MainWindow::MainWindow(const QString &dir, const QVector<BuildDef> &builds, QWidget *parent)
-    : QMainWindow(parent), m_dir(dir), m_builds(&builds)
+MainWindow::MainWindow(const QString &dir, QVector<BuildDef> builds, QWidget *parent)
+    : QMainWindow(parent), m_dir(dir), m_builds(std::move(builds))
 {
     buildUi();
     refresh();
@@ -85,7 +86,7 @@ void MainWindow::log(const QString &line)
 void MainWindow::refresh()
 {
     m_log->clear();
-    const QVector<Target> targets = discover(m_dir, *m_builds);
+    const QVector<Target> targets = discover(m_dir, m_builds);
 
     if (targets.isEmpty())
     {
@@ -174,7 +175,7 @@ void MainWindow::refresh()
 
 void MainWindow::onActionClicked()
 {
-    const QVector<Target> targets = discover(m_dir, *m_builds);
+    const QVector<Target> targets = discover(m_dir, m_builds);
     if (hasBlockedTarget(targets))
     {
         refresh();
@@ -216,7 +217,7 @@ void MainWindow::onActionClicked()
 
     if (acted)
     {
-        const bool blockedAfter = hasBlockedTarget(discover(m_dir, *m_builds));
+        const bool blockedAfter = hasBlockedTarget(discover(m_dir, m_builds));
         const bool success = ok && !blockedAfter;
         m_statusValue->setText(success ? tr("Success!") : tr("Error!"));
         m_statusValue->setStyleSheet(success ? "color: green;" : "color: red;");
