@@ -281,7 +281,6 @@ OpResult applyPatch(const QString &dir, const Target &target)
                 QString("  error preparing patched %1\n").arg(target.fileName)
             };
         }
-        output.close();
     }
 
     if (QFile::exists(backupPath) && !QFile::remove(backupPath))

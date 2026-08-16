@@ -39,8 +39,17 @@ if(MANGOSPATCHER_BUILD_TESTS)
     add_subdirectory(tests)
 endif()
 
-find_program(WINDEPLOYQT_EXE windeployqt
-    HINTS "${CMAKE_PREFIX_PATH}/bin" "${Qt6_DIR}/../../../bin")
+set(_mp_windeployqt_hints)
+foreach(_mp_qt_prefix IN LISTS CMAKE_PREFIX_PATH)
+    list(APPEND _mp_windeployqt_hints "${_mp_qt_prefix}/bin")
+endforeach()
+list(APPEND _mp_windeployqt_hints "${Qt6_DIR}/../../../bin")
+find_program(WINDEPLOYQT_EXE windeployqt HINTS ${_mp_windeployqt_hints})
+
+if(WIN32 AND NOT WINDEPLOYQT_EXE)
+    message(FATAL_ERROR
+        "windeployqt was not found; set CMAKE_PREFIX_PATH to the Qt kit root")
+endif()
 
 # Keep a runnable copy in the build tree for local development.
 if(WINDEPLOYQT_EXE)
@@ -60,6 +69,7 @@ if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
 endif()
 
 install(TARGETS MaNGOSPatcher RUNTIME DESTINATION .)
+install(FILES "${CMAKE_CURRENT_SOURCE_DIR}/../LICENSE" DESTINATION .)
 
 # Bundle the MSVC runtime explicitly. windeployqt cannot reliably find it from
 # a Visual Studio POST_BUILD command because VCINSTALLDIR is not inherited.
