@@ -7,7 +7,7 @@
 
 namespace patcher {
 
-enum class TargetState { Unpatched, Patched, Mixed, Mismatch };
+enum class TargetState { Unpatched, LegacyPatched, Patched, Mixed, Mismatch };
 
 const BuildDef *identifyBuild(qint64 fileSize,
                               const QVector<BuildDef> &builds = knownBuilds());
@@ -41,6 +41,7 @@ struct OpResult
     QString report;
 };
 
+OpResult preflightPatch(const QString &dir, const Target &t);
 OpResult applyPatch(const QString &dir, const Target &t);
 OpResult applyUnpatch(const QString &dir, const Target &t);
 

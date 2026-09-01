@@ -12,6 +12,7 @@ struct PatchSite
     QByteArray unpatched;
     QByteArray patched;
     bool mustRemainUnchanged = false;
+    bool legacyUsesPatched = false;
 };
 
 struct BuildDef
@@ -20,6 +21,7 @@ struct BuildDef
     QString fileName;
     qint64 exeLength;
     QVector<PatchSite> sites;
+    bool supportsLegacyPatched = false;
 };
 
 // Verified against clean Cata 4.3.4.15595 x86 and x64 executables on
@@ -40,16 +42,24 @@ inline const QVector<BuildDef> &knownBuilds()
           {
               // Preserve the established launcher/manifest bypass.
               { 0x737A,  QByteArray::fromHex("E8B1EDFFFF"),
-                         QByteArray::fromHex("B801000000") },
+                         QByteArray::fromHex("B801000000"), false, true },
 
               // Force outbound traffic to connection slot zero.
               { 0x889CA, QByteArray::fromHex("8B550C83FA0275"),
-                         QByteArray::fromHex("BA0000000090EB") },
+                         QByteArray::fromHex("BA0000000090EB"), false, true },
 
               // Bypass the inbound connection-slot-one dispatch gate.
               { 0x883AE, QByteArray::fromHex("74"),
-                         QByteArray::fromHex("EB") },
-          } },
+                         QByteArray::fromHex("EB"), false, true },
+
+              // Adapt the signed Warden module's five-argument file-read ABI
+              // to the client's four-argument sequential archive reader.
+              { 0x3BF388,
+                         QByteArray::fromHex(
+                             "CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC"),
+                         QByteArray::fromHex(
+                             "558BECFF7514FF7510FF750CFF7508E8B465FEFF5DC21400") },
+          }, true },
         { "Cata 4.3.4.15595 (x64)", "Wow-64.exe", 13592144,
           {
               // Enter the outbound type-zero path.

@@ -66,6 +66,21 @@ private slots:
         QVERIFY(button->isEnabled());
     }
 
+    void showsPatchWhenOnlyTargetIsLegacyPatched()
+    {
+        QTemporaryDir tmp;
+        const QVector<BuildDef> builds = fakeBuilds();
+        writeFile(QDir(tmp.path()).filePath("Fake.exe"), legacyPatchedBuf());
+        writeFile(QDir(tmp.path()).filePath("Fake_backup.exe"), unpatchedBuf());
+
+        MainWindow window(tmp.path(), builds);
+        QPushButton *button = actionButton(window);
+        QVERIFY(button != nullptr);
+        QCOMPARE(button->text(), QString("Patch"));
+        QVERIFY(button->isEnabled());
+        QVERIFY(logWidget(window)->toPlainText().contains("ready to upgrade"));
+    }
+
     void clickPatchesAndFlipsToUnpatch()
     {
         QTemporaryDir tmp;
@@ -144,6 +159,29 @@ private slots:
         QVERIFY(QMetaObject::invokeMethod(&window, "onActionClicked"));
         QCOMPARE(readFile(validPath), buildCopy(unpatchedBuf(), builds[0], true));
         QVERIFY(QFile::exists(backupPath));
+    }
+
+    void failedLegacyPreflightCannotPartiallyPatchPeerExecutable()
+    {
+        QTemporaryDir tmp;
+        const QVector<BuildDef> builds = twoBuilds();
+        const QString first = QDir(tmp.path()).filePath("Client32.exe");
+        const QString second = QDir(tmp.path()).filePath("Client64.exe");
+        writeFile(first, unpatchedBuf());
+        writeFile(second, legacyPatchedBuf());
+
+        MainWindow window(tmp.path(), builds);
+        QPushButton *button = actionButton(window);
+        QVERIFY(button != nullptr);
+        QCOMPARE(button->text(), QString("Patch"));
+        QVERIFY(button->isEnabled());
+        QTest::mouseClick(button, Qt::LeftButton);
+
+        QCOMPARE(readFile(first), unpatchedBuf());
+        QCOMPARE(readFile(second), legacyPatchedBuf());
+        QVERIFY(!QFile::exists(QDir(tmp.path()).filePath("Client32_backup.exe")));
+        QVERIFY(!QFile::exists(QDir(tmp.path()).filePath("Client64_backup.exe")));
+        QVERIFY(logWidget(window)->toPlainText().contains("backup"));
     }
 };
 

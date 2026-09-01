@@ -111,6 +111,12 @@ void MainWindow::refresh()
                 anyUnpatched = true;
                 break;
 
+            case TargetState::LegacyPatched:
+                log(tr("Loaded %1 - legacy patch, ready to upgrade")
+                        .arg(target.fileName));
+                anyUnpatched = true;
+                break;
+
             case TargetState::Patched:
                 log(tr("Loaded %1 - already patched").arg(target.fileName));
                 anyPatched = true;
@@ -188,9 +194,46 @@ void MainWindow::onActionClicked()
     bool acted = false;
     QStringList reports;
 
+    // Preflight every target before the first write. In particular, an x86
+    // legacy upgrade requires its clean backup, and must not partially patch a
+    // valid x64 peer before discovering that prerequisite is missing.
+    if (isPatch)
+    {
+        bool preflightOk = true;
+        for (const Target &target : targets)
+        {
+            if (target.state != TargetState::Unpatched
+                && target.state != TargetState::LegacyPatched)
+            {
+                continue;
+            }
+            const OpResult result = preflightPatch(m_dir, target);
+            preflightOk = preflightOk && result.ok;
+            if (!result.ok)
+            {
+                reports << result.report.trimmed();
+            }
+        }
+        if (!preflightOk)
+        {
+            refresh();
+            for (const QString &report : reports)
+            {
+                if (!report.isEmpty())
+                {
+                    log(report);
+                }
+            }
+            m_statusValue->setText(tr("Error!"));
+            m_statusValue->setStyleSheet("color: red;");
+            return;
+        }
+    }
+
     for (const Target &target : targets)
     {
-        if (isPatch && target.state == TargetState::Unpatched)
+        if (isPatch && (target.state == TargetState::Unpatched
+                        || target.state == TargetState::LegacyPatched))
         {
             const OpResult result = applyPatch(m_dir, target);
             reports << result.report.trimmed();
