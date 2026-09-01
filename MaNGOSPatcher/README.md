@@ -26,9 +26,12 @@ checked immediately before every patch or restore operation.
 The current x86 patcher also recognizes the exact earlier 13-byte MaNGOS patch
 as `LegacyPatched`. Upgrading that image requires an existing validated
 `Wow_backup.exe`. The clean backup is preserved rather than replaced by the
-legacy live image, so **Unpatch** still restores the original Blizzard file. If
-the backup is missing or invalid, the upgrade is refused without changing
-either executable.
+legacy live image. While the live executable is `LegacyPatched`, the patcher's
+single action is **Patch** so it can install the current adapter. To restore the
+original Blizzard file instead, click **Patch** once to complete that protected
+upgrade, then click **Unpatch**; the same validated clean backup is preserved
+between those operations. If the backup is missing or invalid, the upgrade is
+refused without changing either executable.
 
 If either discovered executable is partially patched, modified, unreadable, or
 an unsupported size, all actions are blocked. A valid 32-bit client can never
