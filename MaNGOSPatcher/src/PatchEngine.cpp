@@ -432,10 +432,16 @@ OpResult applyPatch(const QString &dir, const Target &target)
         }
         if (!QFile::remove(legacyTempPath))
         {
+            // Both atomic renames have committed and the independently
+            // validated stock backup is still intact. A scanner or read-only
+            // attribute can delay removal on Windows, but that cleanup residue
+            // must not make callers believe the executable was left unchanged.
             return {
-                false,
-                QString("  upgraded %1, but could not remove preserved legacy temporary %2\n")
-                    .arg(target.fileName, QFileInfo(legacyTempPath).fileName())
+                true,
+                QString("  upgraded %1 (clean backup preserved: %2); warning: "
+                        "could not remove legacy temporary %3\n")
+                    .arg(target.fileName, backupName(target.fileName),
+                         QFileInfo(legacyTempPath).fileName())
             };
         }
         return {

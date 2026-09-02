@@ -142,6 +142,33 @@ private slots:
         QVERIFY(!QFile::exists(backup));
     }
 
+    void legacyUpgradeCleanupFailureReportsCommittedSuccess()
+    {
+#ifdef Q_OS_WIN
+        QTemporaryDir tmp;
+        const QVector<BuildDef> builds = fakeBuilds();
+        const QString exe = QDir(tmp.path()).filePath("Fake.exe");
+        const QString backup = QDir(tmp.path()).filePath("Fake_backup.exe");
+        const QString legacyTemp = exe + ".legacy.tmp";
+        writeFile(exe, legacyPatchedBuf());
+        writeFile(backup, unpatchedBuf());
+        QVERIFY(QFile::setPermissions(exe, QFileDevice::ReadOwner));
+
+        const Target legacy = discover(tmp.path(), builds)[0];
+        QCOMPARE(legacy.state, TargetState::LegacyPatched);
+        const OpResult result = applyPatch(tmp.path(), legacy);
+        QVERIFY2(result.ok, qPrintable(result.report));
+        QVERIFY(result.report.contains("warning", Qt::CaseInsensitive));
+        QCOMPARE(readFile(exe), buildCopy(unpatchedBuf(), builds[0], true));
+        QCOMPARE(readFile(backup), unpatchedBuf());
+        QVERIFY(QFile::exists(legacyTemp));
+
+        // Restore write permission so QTemporaryDir can remove the fixture.
+        QVERIFY(QFile::setPermissions(legacyTemp,
+            QFileDevice::ReadOwner | QFileDevice::WriteOwner));
+#endif
+    }
+
     void legacyUpgradeRejectsForeignBytesOutsideDefinedSites()
     {
         QTemporaryDir tmp;
