@@ -142,6 +142,31 @@ private slots:
         QVERIFY(!QFile::exists(backup));
     }
 
+    void legacyUpgradeRejectsForeignBytesOutsideDefinedSites()
+    {
+        QTemporaryDir tmp;
+        const QVector<BuildDef> builds = fakeBuilds();
+        const QString exe = QDir(tmp.path()).filePath("Fake.exe");
+        const QString backup = QDir(tmp.path()).filePath("Fake_backup.exe");
+        QByteArray foreignLegacy = legacyPatchedBuf();
+        foreignLegacy[0] = '\x77';
+        writeFile(exe, foreignLegacy);
+        writeFile(backup, unpatchedBuf());
+
+        const Target legacy = discover(tmp.path(), builds)[0];
+        QCOMPARE(legacy.state, TargetState::LegacyPatched);
+        const OpResult preflight = preflightPatch(tmp.path(), legacy);
+        QVERIFY(!preflight.ok);
+        QVERIFY(preflight.report.contains("outside the known patch sites"));
+
+        const OpResult result = applyPatch(tmp.path(), legacy);
+        QVERIFY(!result.ok);
+        QCOMPARE(readFile(exe), foreignLegacy);
+        QCOMPARE(readFile(backup), unpatchedBuf());
+        QVERIFY(!QFile::exists(exe + ".patch.tmp"));
+        QVERIFY(!QFile::exists(exe + ".legacy.tmp"));
+    }
+
     void legacyUpgradeRejectsInvalidBackupWithoutChangingFiles()
     {
         QTemporaryDir tmp;

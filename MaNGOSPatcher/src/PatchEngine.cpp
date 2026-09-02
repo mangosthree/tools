@@ -234,7 +234,8 @@ OpResult readCurrent(const QString &path, const Target &target,
     return { true, {} };
 }
 
-OpResult validateCleanBackup(const QString &path, const Target &target)
+OpResult readCleanBackup(const QString &path, const Target &target,
+                         QByteArray &data)
 {
     QFile file(path);
     if (!file.open(QIODevice::ReadOnly))
@@ -246,7 +247,7 @@ OpResult validateCleanBackup(const QString &path, const Target &target)
         };
     }
 
-    const QByteArray data = file.readAll();
+    data = file.readAll();
     file.close();
     if (validate(data, *target.def).state != TargetState::Unpatched)
     {
@@ -292,8 +293,25 @@ OpResult preflightPatch(const QString &dir, const Target &target)
 
     if (target.state == TargetState::LegacyPatched)
     {
-        return validateCleanBackup(
-            directory.filePath(backupName(target.fileName)), target);
+        QByteArray cleanData;
+        const OpResult backup = readCleanBackup(
+            directory.filePath(backupName(target.fileName)), target,
+            cleanData);
+        if (!backup.ok)
+        {
+            return backup;
+        }
+        const QByteArray normalized = buildCopy(
+            currentData, *target.def, false);
+        if (normalized.isEmpty() || normalized != cleanData)
+        {
+            return {
+                false,
+                QString("  %1 differs from its clean backup outside the known patch sites; refusing upgrade\n")
+                    .arg(target.fileName)
+            };
+        }
+        return { true, {} };
     }
     return { true, {} };
 }
@@ -320,7 +338,30 @@ OpResult applyPatch(const QString &dir, const Target &target)
         return current;
     }
 
-    const QByteArray patched = buildCopy(original, *target.def, true);
+    QByteArray patchBase = original;
+    if (target.state == TargetState::LegacyPatched)
+    {
+        const OpResult backup = readCleanBackup(
+            backupPath, target, patchBase);
+        if (!backup.ok)
+        {
+            return backup;
+        }
+        const QByteArray normalized = buildCopy(
+            original, *target.def, false);
+        if (normalized.isEmpty() || normalized != patchBase)
+        {
+            return {
+                false,
+                QString("  %1 differs from its clean backup outside the known patch sites; refusing upgrade\n")
+                    .arg(target.fileName)
+            };
+        }
+    }
+
+    // A legacy upgrade is built from the independently validated stock image,
+    // never from bytes carried by the earlier patched executable.
+    const QByteArray patched = buildCopy(patchBase, *target.def, true);
     if (patched.isEmpty())
     {
         return { false, QString("  invalid build definition for %1\n").arg(target.fileName) };
@@ -351,12 +392,6 @@ OpResult applyPatch(const QString &dir, const Target &target)
     {
         // A legacy upgrade must retain the original stock backup. Moving the
         // legacy executable over it would make a later unpatch irrecoverable.
-        const OpResult backup = validateCleanBackup(backupPath, target);
-        if (!backup.ok)
-        {
-            QFile::remove(patchTempPath);
-            return backup;
-        }
         if (QFile::exists(legacyTempPath) && !QFile::remove(legacyTempPath))
         {
             QFile::remove(patchTempPath);

@@ -19,7 +19,7 @@ private slots:
         QCOMPARE(b.fileName, QString("Wow.exe"));
         QCOMPARE(b.exeLength, qint64(10474064));
         QVERIFY(b.supportsLegacyPatched);
-        QCOMPARE(b.sites.size(), 4);
+        QCOMPARE(b.sites.size(), 5);
 
         QCOMPARE(b.sites[0].offset, qint64(0x737A));
         QCOMPARE(b.sites[0].unpatched, QByteArray::fromHex("E8B1EDFFFF"));
@@ -39,6 +39,11 @@ private slots:
         QCOMPARE(b.sites[3].patched,
                  QByteArray::fromHex("558BECFF7514FF7510FF750CFF7508E8B465FEFF5DC21400"));
         QVERIFY(!b.sites[3].legacyUsesPatched);
+        QCOMPARE(b.sites[4].offset, qint64(0x3A5950));
+        QCOMPARE(b.sites[4].unpatched,
+                 QByteArray::fromHex("558BEC8B45148B4D0C8B5508"));
+        QCOMPARE(b.sites[4].patched, b.sites[4].unpatched);
+        QVERIFY(b.sites[4].mustRemainUnchanged);
     }
 
     void x64DefinitionMatchesVerifiedClient()
@@ -87,7 +92,7 @@ private slots:
                 }
             }
         }
-        QCOMPARE(invariantCount, 1);
+        QCOMPARE(invariantCount, 2);
     }
 
     void sitesDoNotOverlap()
