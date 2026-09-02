@@ -2,6 +2,7 @@
 #include <QDir>
 #include <QFile>
 #include <QFileInfo>
+#include <QCryptographicHash>
 #include "PatchEngine.h"
 
 using namespace patcher;
@@ -80,7 +81,13 @@ QVector<qint64> expectedChangedOffsets(const QString &fileName)
         return {
             0x737A, 0x737B, 0x737C, 0x737D, 0x737E,
             0x883AE,
-            0x889CA, 0x889CB, 0x889CC, 0x889CD, 0x889CE, 0x889CF, 0x889D0
+            0x889CA, 0x889CB, 0x889CC, 0x889CD, 0x889CE, 0x889CF, 0x889D0,
+            0x3BF388, 0x3BF389, 0x3BF38A, 0x3BF38B,
+            0x3BF38C, 0x3BF38D, 0x3BF38E, 0x3BF38F,
+            0x3BF390, 0x3BF391, 0x3BF392, 0x3BF393,
+            0x3BF394, 0x3BF395, 0x3BF396, 0x3BF397,
+            0x3BF398, 0x3BF399, 0x3BF39A, 0x3BF39B,
+            0x3BF39C, 0x3BF39D, 0x3BF39E, 0x3BF39F
         };
     }
 
@@ -175,6 +182,22 @@ private slots:
         }
 
         QCOMPARE(buildCopy(patched, def, false), original);
+
+        if (def.fileName == "Wow.exe")
+        {
+            QCOMPARE(QCryptographicHash::hash(patched, QCryptographicHash::Sha256)
+                         .toHex().toUpper(),
+                     QByteArray("F9B1C381CBA997062D751493489DBE1D05678B563CF8C469BBFCA32DC326F0E8"));
+
+            QByteArray legacy = original;
+            legacy.replace(0x737A, 5, QByteArray::fromHex("B801000000"));
+            legacy.replace(0x889CA, 7, QByteArray::fromHex("BA0000000090EB"));
+            legacy.replace(0x883AE, 1, QByteArray::fromHex("EB"));
+            QCOMPARE(validate(legacy, def).state, TargetState::LegacyPatched);
+            QCOMPARE(QCryptographicHash::hash(legacy, QCryptographicHash::Sha256)
+                         .toHex().toUpper(),
+                     QByteArray("46CF1C30155219DCCFF9B5A93FD0FC20C85C51852BB60BB218A5E5905C4CAC81"));
+        }
     }
 };
 

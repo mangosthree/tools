@@ -18,17 +18,32 @@ private slots:
         QCOMPARE(b.name, QString("Cata 4.3.4.15595 (x86)"));
         QCOMPARE(b.fileName, QString("Wow.exe"));
         QCOMPARE(b.exeLength, qint64(10474064));
-        QCOMPARE(b.sites.size(), 3);
+        QVERIFY(b.supportsLegacyPatched);
+        QCOMPARE(b.sites.size(), 5);
 
         QCOMPARE(b.sites[0].offset, qint64(0x737A));
         QCOMPARE(b.sites[0].unpatched, QByteArray::fromHex("E8B1EDFFFF"));
         QCOMPARE(b.sites[0].patched, QByteArray::fromHex("B801000000"));
+        QVERIFY(b.sites[0].legacyUsesPatched);
         QCOMPARE(b.sites[1].offset, qint64(0x889CA));
         QCOMPARE(b.sites[1].unpatched, QByteArray::fromHex("8B550C83FA0275"));
         QCOMPARE(b.sites[1].patched, QByteArray::fromHex("BA0000000090EB"));
+        QVERIFY(b.sites[1].legacyUsesPatched);
         QCOMPARE(b.sites[2].offset, qint64(0x883AE));
         QCOMPARE(b.sites[2].unpatched, QByteArray::fromHex("74"));
         QCOMPARE(b.sites[2].patched, QByteArray::fromHex("EB"));
+        QVERIFY(b.sites[2].legacyUsesPatched);
+        QCOMPARE(b.sites[3].offset, qint64(0x3BF388));
+        QCOMPARE(b.sites[3].unpatched,
+                 QByteArray::fromHex("CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC"));
+        QCOMPARE(b.sites[3].patched,
+                 QByteArray::fromHex("558BECFF7514FF7510FF750CFF7508E8B465FEFF5DC21400"));
+        QVERIFY(!b.sites[3].legacyUsesPatched);
+        QCOMPARE(b.sites[4].offset, qint64(0x3A5950));
+        QCOMPARE(b.sites[4].unpatched,
+                 QByteArray::fromHex("558BEC8B45148B4D0C8B5508"));
+        QCOMPARE(b.sites[4].patched, b.sites[4].unpatched);
+        QVERIFY(b.sites[4].mustRemainUnchanged);
     }
 
     void x64DefinitionMatchesVerifiedClient()
@@ -37,6 +52,7 @@ private slots:
         QCOMPARE(b.name, QString("Cata 4.3.4.15595 (x64)"));
         QCOMPARE(b.fileName, QString("Wow-64.exe"));
         QCOMPARE(b.exeLength, qint64(13592144));
+        QVERIFY(!b.supportsLegacyPatched);
         QCOMPARE(b.sites.size(), 4);
 
         QCOMPARE(b.sites[0].offset, qint64(0xAAB6F));
@@ -76,7 +92,7 @@ private slots:
                 }
             }
         }
-        QCOMPARE(invariantCount, 1);
+        QCOMPARE(invariantCount, 2);
     }
 
     void sitesDoNotOverlap()

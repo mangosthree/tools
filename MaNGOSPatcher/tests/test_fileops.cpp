@@ -26,6 +26,18 @@ private slots:
         QCOMPARE(targets[0].state, TargetState::Unpatched);
     }
 
+    void discoverFindsLegacyPatched()
+    {
+        QTemporaryDir tmp;
+        QVERIFY(tmp.isValid());
+        const QVector<BuildDef> builds = fakeBuilds();
+        writeFile(QDir(tmp.path()).filePath("Fake.exe"), legacyPatchedBuf());
+
+        const QVector<Target> targets = discover(tmp.path(), builds);
+        QCOMPARE(targets.size(), 1);
+        QCOMPARE(targets[0].state, TargetState::LegacyPatched);
+    }
+
     void discoverReportsUnsupportedSize()
     {
         QTemporaryDir tmp;
@@ -80,6 +92,123 @@ private slots:
         QVERIFY2(unpatchResult.ok, qPrintable(unpatchResult.report));
         QCOMPARE(readFile(exe), unpatchedBuf());
         QVERIFY(!QFile::exists(backup));
+    }
+
+    void legacyUpgradeRequiresCleanBackupWithoutChangingFiles()
+    {
+        QTemporaryDir tmp;
+        const QVector<BuildDef> builds = fakeBuilds();
+        const QString exe = QDir(tmp.path()).filePath("Fake.exe");
+        const QString backup = QDir(tmp.path()).filePath("Fake_backup.exe");
+        writeFile(exe, legacyPatchedBuf());
+
+        const Target legacy = discover(tmp.path(), builds)[0];
+        QCOMPARE(legacy.state, TargetState::LegacyPatched);
+        const OpResult preflight = preflightPatch(tmp.path(), legacy);
+        QVERIFY(!preflight.ok);
+        QVERIFY(preflight.report.contains("backup"));
+
+        const OpResult result = applyPatch(tmp.path(), legacy);
+        QVERIFY(!result.ok);
+        QCOMPARE(readFile(exe), legacyPatchedBuf());
+        QVERIFY(!QFile::exists(backup));
+        QVERIFY(!QFile::exists(exe + ".patch.tmp"));
+        QVERIFY(!QFile::exists(exe + ".legacy.tmp"));
+    }
+
+    void legacyUpgradePreservesStockBackupAndStillUnpatches()
+    {
+        QTemporaryDir tmp;
+        const QVector<BuildDef> builds = fakeBuilds();
+        const QString exe = QDir(tmp.path()).filePath("Fake.exe");
+        const QString backup = QDir(tmp.path()).filePath("Fake_backup.exe");
+        writeFile(exe, legacyPatchedBuf());
+        writeFile(backup, unpatchedBuf());
+
+        const Target legacy = discover(tmp.path(), builds)[0];
+        const OpResult preflight = preflightPatch(tmp.path(), legacy);
+        QVERIFY2(preflight.ok, qPrintable(preflight.report));
+        const OpResult result = applyPatch(tmp.path(), legacy);
+        QVERIFY2(result.ok, qPrintable(result.report));
+        QCOMPARE(readFile(exe), buildCopy(unpatchedBuf(), builds[0], true));
+        QCOMPARE(readFile(backup), unpatchedBuf());
+        QVERIFY(!QFile::exists(exe + ".legacy.tmp"));
+
+        const Target patched = discover(tmp.path(), builds)[0];
+        QCOMPARE(patched.state, TargetState::Patched);
+        const OpResult unpatch = applyUnpatch(tmp.path(), patched);
+        QVERIFY2(unpatch.ok, qPrintable(unpatch.report));
+        QCOMPARE(readFile(exe), unpatchedBuf());
+        QVERIFY(!QFile::exists(backup));
+    }
+
+    void legacyUpgradeCleanupFailureReportsCommittedSuccess()
+    {
+#ifdef Q_OS_WIN
+        QTemporaryDir tmp;
+        const QVector<BuildDef> builds = fakeBuilds();
+        const QString exe = QDir(tmp.path()).filePath("Fake.exe");
+        const QString backup = QDir(tmp.path()).filePath("Fake_backup.exe");
+        const QString legacyTemp = exe + ".legacy.tmp";
+        writeFile(exe, legacyPatchedBuf());
+        writeFile(backup, unpatchedBuf());
+        QVERIFY(QFile::setPermissions(exe, QFileDevice::ReadOwner));
+
+        const Target legacy = discover(tmp.path(), builds)[0];
+        QCOMPARE(legacy.state, TargetState::LegacyPatched);
+        const OpResult result = applyPatch(tmp.path(), legacy);
+        QVERIFY2(result.ok, qPrintable(result.report));
+        QVERIFY(result.report.contains("warning", Qt::CaseInsensitive));
+        QCOMPARE(readFile(exe), buildCopy(unpatchedBuf(), builds[0], true));
+        QCOMPARE(readFile(backup), unpatchedBuf());
+        QVERIFY(QFile::exists(legacyTemp));
+
+        // Restore write permission so QTemporaryDir can remove the fixture.
+        QVERIFY(QFile::setPermissions(legacyTemp,
+            QFileDevice::ReadOwner | QFileDevice::WriteOwner));
+#endif
+    }
+
+    void legacyUpgradeRejectsForeignBytesOutsideDefinedSites()
+    {
+        QTemporaryDir tmp;
+        const QVector<BuildDef> builds = fakeBuilds();
+        const QString exe = QDir(tmp.path()).filePath("Fake.exe");
+        const QString backup = QDir(tmp.path()).filePath("Fake_backup.exe");
+        QByteArray foreignLegacy = legacyPatchedBuf();
+        foreignLegacy[0] = '\x77';
+        writeFile(exe, foreignLegacy);
+        writeFile(backup, unpatchedBuf());
+
+        const Target legacy = discover(tmp.path(), builds)[0];
+        QCOMPARE(legacy.state, TargetState::LegacyPatched);
+        const OpResult preflight = preflightPatch(tmp.path(), legacy);
+        QVERIFY(!preflight.ok);
+        QVERIFY(preflight.report.contains("outside the known patch sites"));
+
+        const OpResult result = applyPatch(tmp.path(), legacy);
+        QVERIFY(!result.ok);
+        QCOMPARE(readFile(exe), foreignLegacy);
+        QCOMPARE(readFile(backup), unpatchedBuf());
+        QVERIFY(!QFile::exists(exe + ".patch.tmp"));
+        QVERIFY(!QFile::exists(exe + ".legacy.tmp"));
+    }
+
+    void legacyUpgradeRejectsInvalidBackupWithoutChangingFiles()
+    {
+        QTemporaryDir tmp;
+        const QVector<BuildDef> builds = fakeBuilds();
+        const QString exe = QDir(tmp.path()).filePath("Fake.exe");
+        const QString backup = QDir(tmp.path()).filePath("Fake_backup.exe");
+        writeFile(exe, legacyPatchedBuf());
+        writeFile(backup, legacyPatchedBuf());
+
+        const OpResult result =
+            applyPatch(tmp.path(), discover(tmp.path(), builds)[0]);
+        QVERIFY(!result.ok);
+        QVERIFY(result.report.contains("clean"));
+        QCOMPARE(readFile(exe), legacyPatchedBuf());
+        QCOMPARE(readFile(backup), legacyPatchedBuf());
     }
 
     void patchRefusesWrongRecordedState()

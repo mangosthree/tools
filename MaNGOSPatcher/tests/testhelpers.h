@@ -8,17 +8,18 @@
 namespace patcher {
 namespace test {
 
-// A small synthetic build so core tests never touch a real client. The two
-// ordinary sites are at 4 (2 bytes) and 10 (1 byte); offset 12 is an invariant.
+// A small synthetic build so core tests never touch a real client. Offset 4 is
+// an established patch, offset 10 is the current-revision addition, and offset
+// 12 is an invariant.
 inline QVector<BuildDef> fakeBuilds()
 {
     return {
         { "Fake", "Fake.exe", 16,
           {
-              { 4,  QByteArray::fromHex("AABB"), QByteArray::fromHex("9090") },
-              { 10, QByteArray::fromHex("CC"),   QByteArray::fromHex("00") },
-              { 12, QByteArray::fromHex("A1B2"), QByteArray::fromHex("A1B2"), true },
-          } },
+              { 4,  QByteArray::fromHex("AABB"), QByteArray::fromHex("9090"), false, true },
+              { 10, QByteArray::fromHex("CC"),   QByteArray::fromHex("00"), false, false },
+              { 12, QByteArray::fromHex("A1B2"), QByteArray::fromHex("A1B2"), true, false },
+          }, true },
     };
 }
 
@@ -38,6 +39,14 @@ inline QByteArray legacyWrongInvariantBuf()
     QByteArray b = unpatchedBuf();
     b[12] = '\xEE';
     b[13] = '\x10';
+    return b;
+}
+
+inline QByteArray legacyPatchedBuf()
+{
+    QByteArray b = unpatchedBuf();
+    b[4] = '\x90';
+    b[5] = '\x90';
     return b;
 }
 

@@ -49,13 +49,28 @@ private slots:
         QVERIFY(r.report.isEmpty());
     }
 
+    void validateLegacyPatched()
+    {
+        const QVector<BuildDef> builds = fakeBuilds();
+        const ValidateResult r = validate(legacyPatchedBuf(), builds[0]);
+        QCOMPARE(r.state, TargetState::LegacyPatched);
+        QVERIFY(r.report.isEmpty());
+    }
+
     void validateMixed()
     {
         const QVector<BuildDef> builds = fakeBuilds();
         QByteArray data = unpatchedBuf();
-        data[4] = '\x90';
-        data[5] = '\x90';
+        data[10] = '\x00';
         QCOMPARE(validate(data, builds[0]).state, TargetState::Mixed);
+    }
+
+    void legacyPatternIsUnavailableWithoutExplicitBuildSupport()
+    {
+        QVector<BuildDef> builds = fakeBuilds();
+        builds[0].supportsLegacyPatched = false;
+        QCOMPARE(validate(legacyPatchedBuf(), builds[0]).state,
+                 TargetState::Mixed);
     }
 
     void validateOrdinaryMismatch()
@@ -118,6 +133,14 @@ private slots:
         const QByteArray patched = buildCopy(original, builds[0], true);
         QVERIFY(patched != original);
         QCOMPARE(buildCopy(patched, builds[0], false), original);
+    }
+
+    void buildCopyUpgradesLegacyToCurrent()
+    {
+        const QVector<BuildDef> builds = fakeBuilds();
+        const QByteArray current = buildCopy(legacyPatchedBuf(), builds[0], true);
+        QCOMPARE(validate(current, builds[0]).state, TargetState::Patched);
+        QCOMPARE(current, buildCopy(unpatchedBuf(), builds[0], true));
     }
 };
 

@@ -12,7 +12,7 @@ before a file is changed.
 
 ## File safety
 
-Patching is transactional:
+Patching a clean executable is transactional:
 
 1. The complete patched image is prepared in a temporary file.
 2. The original is moved to `Wow_backup.exe` or `Wow-64_backup.exe`.
@@ -22,6 +22,16 @@ Patching is transactional:
 Unpatch restores the validated clean backup; it does not reconstruct an
 original from the live executable. The executable is re-read and its state is
 checked immediately before every patch or restore operation.
+
+The current x86 patcher also recognizes the exact earlier 13-byte MaNGOS patch
+as `LegacyPatched`. Upgrading that image requires an existing validated
+`Wow_backup.exe`. The clean backup is preserved rather than replaced by the
+legacy live image. While the live executable is `LegacyPatched`, the patcher's
+single action is **Patch** so it can install the current adapter. To restore the
+original Blizzard file instead, click **Patch** once to complete that protected
+upgrade, then click **Unpatch**; the same validated clean backup is preserved
+between those operations. If the backup is missing or invalid, the upgrade is
+refused without changing either executable.
 
 If either discovered executable is partially patched, modified, unreadable, or
 an unsupported size, all actions are blocked. A valid 32-bit client can never
@@ -36,6 +46,15 @@ The Qt patcher deliberately refuses an executable containing the old edit. It
 does not guess that the rest of the file is clean or silently repair Blizzard
 binaries. Restore a verified clean `Wow-64_backup.exe`, or obtain a verified
 clean 4.3.4.15595 executable, and then run the patcher again.
+
+### 32-bit Warden archive adapter
+
+The current x86 output adds a 24-byte adapter at file offset `0x3BF388`. It
+converts the signed Warden module's five-argument archive-read callback into the
+exact client's four-argument sequential reader. The patcher accepts only the
+verified 24-byte alignment-padding preimage and blocks every other mixture.
+The server probes those exact bytes before it enables x86 archive checks;
+stock and legacy-patched clients remain supported without archive checks.
 
 ## Prerequisites
 
